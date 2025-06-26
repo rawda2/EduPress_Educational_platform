@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { LogOut } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import ThemeToggle from "@/components/dashboard/ThemeToggle";
@@ -12,15 +13,39 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
+import { fetchCurrentUser } from "@/features/auth/fetchCurrentUser";
+
 export default function Header() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      const result = await fetchCurrentUser();
+      if (result.success) {
+        setUser(result.user);
+      } else {
+        console.error(result.message);
+      }
+    }
+
+    fetchUser();
+  }, []);
+
+  const getInitials = (name) => {
+    if (!name) return "AD";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  };
+
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b shadow-sm">
-      {/* Left: Logo that switches with theme */}
+      {/* Left: Logo + Sidebar Menu */}
       <div className="h-8 flex items-center gap-3">
-        {/* Hamburger menu visible on small screens only */}
         <SidebarSheet />
-
-        {/* Logo */}
         <img
           src="src/assets/logo-light.svg"
           alt="Logo"
@@ -33,27 +58,35 @@ export default function Header() {
         />
       </div>
 
-      {/* Right: Theme toggle and user menu */}
+      {/* Right: Theme + User */}
       <div className="flex items-center gap-4">
         <ThemeToggle />
 
-        {/* Avatar dropdown menu */}
+        {/* Avatar Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger className="outline-none">
             <Avatar>
-              <AvatarFallback className="text-xs">AD</AvatarFallback>
+              <AvatarFallback className="text-xs">
+                {getInitials(user?.fullName)}
+              </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuLabel>
-              Admin
-              <div className="text-xs text-muted-foreground">Super</div>
+              {user?.fullName || "Loading..."}
+              <div className="text-xs text-muted-foreground">
+                {user?.email || ""}
+              </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-destructive focus:text-destructive cursor-pointer"
-              onClick={() => console.log("Logging out...")}
+             onClick={() => {
+              localStorage.removeItem("token");
+              window.location.href = "/unauthorized"; 
+            }}
+
             >
               <LogOut className="w-4 h-4 mr-2" />
               Logout

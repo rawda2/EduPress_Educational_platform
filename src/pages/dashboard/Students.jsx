@@ -1,43 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import StudentsTable from "@/components/dashboard/StudentsTable";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import StudentsTable from "@/features/admin/StudentsTable";
+import { fetchAllUsersAPI } from "@/features/admin/fetchAllUsersAPI";
 
 export default function Students() {
-  const fakeStudents = [
-    {
-      _id: "1",
-      fullName: "Ali Ahmed",
-      email: "ali.ahmed@example.com",
-      phoneNumber: "01012345678",
-      classLevel: "Grade 10",
-      role: "user",
-      isVerified: true,
-    },
-    {
-      _id: "2",
-      fullName: "Sara Youssef",
-      email: "sara.youssef@example.com",
-      phoneNumber: "01098765432",
-      classLevel: "Grade 11",
-      role: "user",
-      isVerified: false,
-    },
-    {
-      _id: "3",
-      fullName: "Mohamed Samir",
-      email: "mohamed.samir@example.com",
-      phoneNumber: "01011223344",
-      classLevel: "Grade 12",
-      role: "admin",
-      isVerified: true,
-    },
-  ];
-
+  const [students, setStudents] = useState([]);
   const [searchType, setSearchType] = useState("name"); // name | email | phone
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const filteredStudents = fakeStudents.filter((student) => {
+  useEffect(() => {
+    async function fetchStudents() {
+      const result = await fetchAllUsersAPI();
+      if (result.success) {
+        // فقط الطلاب اللي role بتاعهم "user"
+        const onlyUsers = result.users.filter((u) => u.role === "user");
+        setStudents(onlyUsers);
+      } else {
+        console.error(result.message);
+      }
+      setLoading(false);
+    }
+
+    fetchStudents();
+  }, []);
+
+  const filteredStudents = students.filter((student) => {
     if (searchType === "name") {
       return student.fullName.toLowerCase().includes(searchTerm.toLowerCase());
     }
@@ -77,9 +72,12 @@ export default function Students() {
         />
       </div>
 
-
       {/* Students Table */}
-      <StudentsTable students={filteredStudents} />
+      {loading ? (
+        <p className="text-muted-foreground">Loading students...</p>
+      ) : (
+        <StudentsTable students={filteredStudents} />
+      )}
     </div>
   );
 }

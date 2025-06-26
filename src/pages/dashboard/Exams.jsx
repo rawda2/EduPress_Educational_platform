@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import ExamsTable from "@/components/dashboard/ExamsTable";
+import React, { useEffect, useState } from "react";
+import ExamsTable from "@/features/admin/ExamsTable";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import {
@@ -9,32 +9,26 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { fetchExamsAPI } from "@/features/exams/fetchExamsAPI";
 
 export default function Exams() {
-  const fakeExams = [
-    {
-      _id: "1",
-      title: "Math Exam 2034",
-      description: "Final exam covering algebra, geometry, and calculus.",
-      classLevel: "Grade 1 Secondary",
-      duration: 10,
-      startDate: "2024-10-22T00:00:00.000Z",
-      endDate: "2024-10-29T00:00:00.000Z",
-      questions: [{ _id: "q1" }, { _id: "q2" }],
-    },
-    {
-      _id: "2",
-      title: "Math Exam 2035",
-      description: "Same topics as previous",
-      classLevel: "Grade 2 Secondary",
-      duration: 10,
-      startDate: "2024-10-22T00:00:00.000Z",
-      endDate: "2024-10-29T00:00:00.000Z",
-      questions: [],
-    },
-  ];
-
+  const [exams, setExams] = useState([]);
   const [selectedClassLevel, setSelectedClassLevel] = useState("all");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchExams() {
+      const result = await fetchExamsAPI();
+      if (result.success) {
+        setExams(result.exams);
+      } else {
+        console.error(result.message);
+      }
+      setLoading(false);
+    }
+
+    fetchExams();
+  }, []);
 
   const handleShow = (exam) => console.log("Show exam:", exam);
   const handleEdit = (exam) => console.log("Edit exam:", exam);
@@ -42,8 +36,8 @@ export default function Exams() {
 
   const filteredExams =
     selectedClassLevel === "all"
-      ? fakeExams
-      : fakeExams.filter((exam) => exam.classLevel === selectedClassLevel);
+      ? exams
+      : exams.filter((exam) => exam.classLevel === selectedClassLevel);
 
   return (
     <div className="space-y-6">
@@ -71,12 +65,16 @@ export default function Exams() {
       </div>
 
       {/* Table */}
-      <ExamsTable
-        exams={filteredExams}
-        onShow={handleShow}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {loading ? (
+        <p className="text-muted-foreground">Loading exams...</p>
+      ) : (
+        <ExamsTable
+          exams={filteredExams}
+          onShow={handleShow}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }

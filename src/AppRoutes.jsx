@@ -23,6 +23,7 @@ const Register = lazy(() => import("@/pages/Register"));
 const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 
+const Unauthorized = lazy(() => import ("@/pages/Unauthorized"))
 
 
 export default function AppRouter() {
@@ -158,6 +159,16 @@ export default function AppRouter() {
 
         {/* 404 Page */}
         <Route path="*" element={<NotFound />} />
+
+        {/* Unauthorized Page */}
+        <Route
+          path="/unauthorized"
+          element={
+            <SuspenseFallback>
+              <Unauthorized />
+            </SuspenseFallback>
+          }
+        />
       </Routes>
       <Toaster />
     </BrowserRouter>

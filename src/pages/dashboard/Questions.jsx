@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import QuestionsTable from "@/components/dashboard/QuestionsTable";
+import React, { useState, useEffect } from "react";
+import QuestionsTable from "@/features/admin/QuestionsTable";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import {
@@ -9,64 +9,69 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { fetchQuestionsAPI } from "@/features/questions/fetchQuestionsAPI";
+
+// ❗ مؤقتًا: Map بين examId والعنوان
+const examIdToTitle = {
+  "671a785c3fa556fe79e8abc9": "Math Exam 2034",
+  // ضيفي هنا أي امتحانات تانية
+};
 
 export default function Questions() {
-  // All questions (each contains exam title for filtering)
-  const [questions, setQuestions] = useState([
-    {
-      _id: "671a78743fa556fe79e8abce",
-      text: "What is 5 multiplied by 5?",
-      type: "multiple-choice",
-      options: ["200", "350", "250", "25"],
-      correctAnswer: "25",
-      points: 2,
-      exam: { _id: "1", title: "Math Exam 2034" },
-    },
-    {
-      _id: "671a78873fa556fe79e8abd4",
-      text: "What is 5 multiplied by 50?",
-      type: "multiple-choice",
-      options: ["200", "350", "250", "25"],
-      correctAnswer: "250",
-      points: 2,
-      exam: { _id: "2", title: "Math Exam 2035" },
-    },
-  ]);
-
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedExam, setSelectedExam] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
 
-  // Handlers
+  useEffect(() => {
+    async function getData() {
+      const result = await fetchQuestionsAPI();
+      if (result.success) {
+        const formattedQuestions = result.questions.map((q) => ({
+          ...q,
+          exam: {
+            _id: q.exam,
+            title: examIdToTitle[q.exam] || "Unknown Exam",
+          },
+        }));
+        setQuestions(formattedQuestions);
+      } else {
+        console.error(result.message);
+      }
+      setLoading(false);
+    }
+
+    getData();
+  }, []);
+
   const handleShow = (q) => alert("Showing: " + q.text);
   const handleEdit = (q) => alert("Editing: " + q.text);
   const handleDelete = (id) => {
     setQuestions((prev) => prev.filter((q) => q._id !== id));
   };
 
-  // Filter questions based on selected exam and type
   const filteredQuestions = questions.filter((q) => {
-    const matchesExam = selectedExam === "all" || q.exam?.title === selectedExam;
+    const matchesExam =
+      selectedExam === "all" || q.exam?.title === selectedExam;
     const matchesType = selectedType === "all" || q.type === selectedType;
     return matchesExam && matchesType;
   });
 
-  // Get unique exam titles and question types for filter options
   const uniqueExams = [...new Set(questions.map((q) => q.exam?.title))];
   const uniqueTypes = [...new Set(questions.map((q) => q.type))];
 
   return (
     <div className="space-y-6">
-      {/* Header with Add Button */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Questions</h1>
         <Button className="bg-primary text-white flex items-center gap-2">
-          <Plus size={16} /> Add New Question
+          <Plus size={16} />
+          Add New Question
         </Button>
       </div>
 
-      {/* Filters Section */}
+      {/* Filters */}
       <div className="flex gap-4">
-        {/* Filter by Exam */}
         <div className="w-[200px]">
           <Select value={selectedExam} onValueChange={setSelectedExam}>
             <SelectTrigger>
@@ -83,7 +88,6 @@ export default function Questions() {
           </Select>
         </div>
 
-        {/* Filter by Type */}
         <div className="w-[200px]">
           <Select value={selectedType} onValueChange={setSelectedType}>
             <SelectTrigger>
@@ -101,13 +105,17 @@ export default function Questions() {
         </div>
       </div>
 
-      {/* Table of Filtered Questions */}
-      <QuestionsTable
-        questions={filteredQuestions}
-        onShow={handleShow}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {/* Table */}
+      {loading ? (
+        <p className="text-muted-foreground">Loading questions...</p>
+      ) : (
+        <QuestionsTable
+          questions={filteredQuestions}
+          onShow={handleShow}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }
