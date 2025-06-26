@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ExamsTable from "@/features/admin/ExamsTable";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -9,39 +9,25 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { fetchExamsAPI } from "@/features/exams/fetchExamsAPI";
+import { useExams } from "@/hooks/admin/useExams";
 
 export default function Exams() {
-  const [exams, setExams] = useState([]);
+  const { data, isLoading, isError } = useExams();
   const [selectedClassLevel, setSelectedClassLevel] = useState("all");
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchExams() {
-      const result = await fetchExamsAPI();
-      if (result.success) {
-        setExams(result.exams);
-      } else {
-        console.error(result.message);
-      }
-      setLoading(false);
-    }
-
-    fetchExams();
-  }, []);
-
-  const handleShow = (exam) => console.log("Show exam:", exam);
-  const handleEdit = (exam) => console.log("Edit exam:", exam);
-  const handleDelete = (id) => console.log("Delete exam:", id);
+const exams = data || [];
 
   const filteredExams =
     selectedClassLevel === "all"
       ? exams
       : exams.filter((exam) => exam.classLevel === selectedClassLevel);
 
+  const handleShow = (exam) => console.log("Show exam:", exam);
+  const handleEdit = (exam) => console.log("Edit exam:", exam);
+  const handleDelete = (id) => console.log("Delete exam:", id);
+
   return (
     <div className="space-y-6">
-      {/* Header and Add Button */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Exams</h1>
         <Button className="bg-primary text-white flex items-center gap-2">
@@ -50,7 +36,7 @@ export default function Exams() {
         </Button>
       </div>
 
-      {/* Filter by class level */}
+      {/* Filter */}
       <div className="w-[200px]">
         <Select value={selectedClassLevel} onValueChange={setSelectedClassLevel}>
           <SelectTrigger>
@@ -65,8 +51,12 @@ export default function Exams() {
       </div>
 
       {/* Table */}
-      {loading ? (
+      {isLoading ? (
         <p className="text-muted-foreground">Loading exams...</p>
+      ) : isError ? (
+        <p className="text-destructive">Error loading exams</p>
+      ) : filteredExams.length === 0 ? (
+        <p className="text-muted-foreground">No exams found</p>
       ) : (
         <ExamsTable
           exams={filteredExams}

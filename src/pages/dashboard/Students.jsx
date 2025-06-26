@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -8,29 +8,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import StudentsTable from "@/features/admin/StudentsTable";
-import { fetchAllUsersAPI } from "@/features/admin/fetchAllUsersAPI";
+import { useAllUsers } from "@/hooks/admin/useAllUsers";
 
 export default function Students() {
-  const [students, setStudents] = useState([]);
-  const [searchType, setSearchType] = useState("name"); // name | email | phone
+  const { data, isLoading, isError } = useAllUsers();
+  const [searchType, setSearchType] = useState("name");
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchStudents() {
-      const result = await fetchAllUsersAPI();
-      if (result.success) {
-        // فقط الطلاب اللي role بتاعهم "user"
-        const onlyUsers = result.users.filter((u) => u.role === "user");
-        setStudents(onlyUsers);
-      } else {
-        console.error(result.message);
-      }
-      setLoading(false);
-    }
-
-    fetchStudents();
-  }, []);
+  const students = (data || []).filter((u) => u.role === "user");
 
   const filteredStudents = students.filter((student) => {
     if (searchType === "name") {
@@ -47,10 +32,9 @@ export default function Students() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <h1 className="text-2xl font-semibold">Students</h1>
 
-      {/* Search bar with filter */}
+      {/* Search with filter */}
       <div className="flex flex-wrap items-center gap-3">
         <Select value={searchType} onValueChange={setSearchType}>
           <SelectTrigger className="w-[120px]">
@@ -72,12 +56,15 @@ export default function Students() {
         />
       </div>
 
-      {/* Students Table */}
-      {loading ? (
+      {/* Table */}
+      {isLoading ? (
         <p className="text-muted-foreground">Loading students...</p>
+      ) : isError ? (
+        <p className="text-destructive">Error loading students</p>
       ) : (
         <StudentsTable students={filteredStudents} />
       )}
     </div>
   );
 }
+

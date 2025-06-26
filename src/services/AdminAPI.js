@@ -1,48 +1,82 @@
 // src/services/AdminAPI.js
+import axios from "axios";
 import { BASE_URL } from "./AuthAPI";
 
+const getTokenHeader = () => {
+  const token = localStorage.getItem("token");
+  return {
+    headers: {
+      token: token,
+    },
+  };
+};
+
 // ========== Admin & User Management ==========
-const CREATE_ADMIN_URL = `${BASE_URL}/admin/create-admin`;
-const GET_ALL_ADMINS_URL = `${BASE_URL}/admin/all-admin`;
-const GET_ALL_USERS_URL = `${BASE_URL}/admin/all-user`;
-const GET_CURRENT_USER_URL = `${BASE_URL}/user/`; // ✅ Get currently logged-in user (admin or user)
+export async function fetchAllUsersAPI() {
+  try {
+    const response = await axios.get(`${BASE_URL}/admin/all-user`, getTokenHeader());
+    return { success: true, users: response.data?.data || [] };
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    const message = error.response?.data?.message || "Error fetching users";
+    return { success: false, message };
+  }
+}
+
+export async function fetchAllAdminsAPI() {
+  try {
+    const response = await axios.get(`${BASE_URL}/admin/all-admin`, getTokenHeader());
+    return { success: true, admins: response.data?.data || [] };
+  } catch (error) {
+    console.error("Failed to fetch admins:", error);
+    const message = error.response?.data?.message || "Error fetching admins";
+    return { success: false, message };
+  }
+}
+
+export async function fetchCurrentUserAPI() {
+  try {
+    const response = await axios.get(`${BASE_URL}/user/`, getTokenHeader());
+    return { success: true, user: response.data?.data };
+  } catch (error) {
+    console.error("Failed to fetch current user:", error);
+    const message = error.response?.data?.message || "Error fetching user";
+    return { success: false, message };
+  }
+}
 
 // ========== Lessons ==========
-const GET_LESSONS_URL = `${BASE_URL}/lesson`;
+export async function fetchLessonsAPI() {
+  try {
+    const response = await axios.get(`${BASE_URL}/lesson`, getTokenHeader());
+    return { success: true, lessons: response.data?.data || [] };
+  } catch (error) {
+    console.error("Failed to fetch lessons:", error);
+    const message = error.response?.data?.message || "Error fetching lessons";
+    return { success: false, message };
+  }
+}
 
 // ========== Exams ==========
-const ADD_EXAM_URL = `${BASE_URL}/exams`; // POST
-const GET_EXAMS_URL = `${BASE_URL}/exam`; // GET all exams
-const GET_EXAM_BY_ID_URL = (examId) => `${BASE_URL}/exam/get/${examId}`; // GET one exam
-const UPDATE_EXAM_URL = (examId) => `${BASE_URL}/exam/${examId}`; // PUT
-const DELETE_EXAM_URL = (examId) => `${BASE_URL}/exam/${examId}`; // DELETE
+export async function fetchExamsAPI() {
+  try {
+    const response = await axios.get(`${BASE_URL}/exam`, getTokenHeader());
+    return { success: true, exams: response.data?.data || [] };
+  } catch (error) {
+    console.error("Failed to fetch exams:", error);
+    const message = error.response?.data?.message || "Error fetching exams";
+    return { success: false, message };
+  }
+}
 
 // ========== Questions ==========
-const ADD_QUESTION_URL = `${BASE_URL}/question`; // POST
-const GET_ALL_QUESTIONS_URL = `${BASE_URL}/question`; // GET all
-const GET_QUESTION_BY_ID_URL = (questionId) => `${BASE_URL}/question/get/${questionId}`; // GET one
-const DELETE_QUESTION_URL = (questionId) => `${BASE_URL}/question/${questionId}`; // DELETE
-
-export {
-  // Admins & Users
-  CREATE_ADMIN_URL,
-  GET_ALL_ADMINS_URL,
-  GET_ALL_USERS_URL,
-  GET_CURRENT_USER_URL, 
-
-  // Lessons
-  GET_LESSONS_URL,
-
-  // Exams
-  ADD_EXAM_URL,
-  GET_EXAMS_URL,
-  GET_EXAM_BY_ID_URL,
-  UPDATE_EXAM_URL,
-  DELETE_EXAM_URL,
-
-  // Questions
-  ADD_QUESTION_URL,
-  GET_ALL_QUESTIONS_URL,
-  GET_QUESTION_BY_ID_URL,
-  DELETE_QUESTION_URL,
-};
+export async function fetchQuestionsAPI() {
+  try {
+    const response = await axios.get(`${BASE_URL}/question`, getTokenHeader());
+    return { success: true, questions: response.data?.data || [] };
+  } catch (error) {
+    console.error("Failed to fetch questions:", error);
+    const message = error.response?.data?.message || "Error fetching questions";
+    return { success: false, message };
+  }
+}

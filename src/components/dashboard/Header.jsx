@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { LogOut } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import ThemeToggle from "@/components/dashboard/ThemeToggle";
@@ -13,23 +12,11 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
-import { fetchCurrentUser } from "@/features/auth/fetchCurrentUser";
+import { useCurrentUser } from "@/hooks/admin/useCurrentUser";
 
 export default function Header() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    async function fetchUser() {
-      const result = await fetchCurrentUser();
-      if (result.success) {
-        setUser(result.user);
-      } else {
-        console.error(result.message);
-      }
-    }
-
-    fetchUser();
-  }, []);
+  const { data, isLoading } = useCurrentUser();
+const user = data;
 
   const getInitials = (name) => {
     if (!name) return "AD";
@@ -74,7 +61,7 @@ export default function Header() {
 
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuLabel>
-              {user?.fullName || "Loading..."}
+              {isLoading ? "Loading..." : user?.fullName}
               <div className="text-xs text-muted-foreground">
                 {user?.email || ""}
               </div>
@@ -82,11 +69,10 @@ export default function Header() {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-destructive focus:text-destructive cursor-pointer"
-             onClick={() => {
-              localStorage.removeItem("token");
-              window.location.href = "/unauthorized"; 
-            }}
-
+              onClick={() => {
+                localStorage.removeItem("token");
+                window.location.href = "/unauthorized";
+              }}
             >
               <LogOut className="w-4 h-4 mr-2" />
               Logout

@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   Select,
   SelectTrigger,
@@ -9,43 +8,23 @@ import {
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import LessonsTable from "@/features/admin/LessonsTable";
-import { fetchLessonsAPI } from "@/features/lessons/fetchLessonsAPI";
+import { useLessons } from "@/hooks/admin/useLessons";
+import React, { useState} from "react";
 
 export default function Lessons() {
-  const [lessons, setLessons] = useState([]);
+  const { data, isLoading, isError } = useLessons();
   const [selectedClassLevel, setSelectedClassLevel] = useState("all");
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchLessons() {
-      const result = await fetchLessonsAPI();
-      if (result.success) {
-        setLessons(result.lessons);
-      } else {
-        console.error(result.message);
-      }
-      setLoading(false);
-    }
-
-    fetchLessons();
-  }, []);
-
-  const handleShow = (lesson) => {
-    console.log("Show details for:", lesson);
-  };
-
-  const handleEdit = (lesson) => {
-    console.log("Edit lesson:", lesson);
-  };
-
-  const handleDelete = (id) => {
-    console.log("Delete lesson with id:", id);
-  };
+  const lessons = data || [];
 
   const filteredLessons =
     selectedClassLevel === "all"
       ? lessons
       : lessons.filter((lesson) => lesson.classLevel === selectedClassLevel);
+
+  const handleShow = (lesson) => console.log("Show details for:", lesson);
+  const handleEdit = (lesson) => console.log("Edit lesson:", lesson);
+  const handleDelete = (id) => console.log("Delete lesson with id:", id);
 
   return (
     <div className="space-y-6">
@@ -70,8 +49,12 @@ export default function Lessons() {
         </Select>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <p className="text-muted-foreground">Loading lessons...</p>
+      ) : isError ? (
+        <p className="text-destructive">Failed to load lessons.</p>
+      ) : filteredLessons.length === 0 ? (
+        <p className="text-muted-foreground">No lessons found.</p>
       ) : (
         <LessonsTable
           lessons={filteredLessons}
@@ -83,3 +66,4 @@ export default function Lessons() {
     </div>
   );
 }
+

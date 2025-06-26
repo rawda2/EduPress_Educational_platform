@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import QuestionsTable from "@/features/admin/QuestionsTable";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -9,56 +8,36 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { fetchQuestionsAPI } from "@/features/questions/fetchQuestionsAPI";
-
-// ❗ مؤقتًا: Map بين examId والعنوان
-const examIdToTitle = {
-  "671a785c3fa556fe79e8abc9": "Math Exam 2034",
-  // ضيفي هنا أي امتحانات تانية
-};
+import { useQuestions } from "@/hooks/admin/useQuestions";
+import React, { useState} from "react";
 
 export default function Questions() {
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading, isError } = useQuestions();
   const [selectedExam, setSelectedExam] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
 
-  useEffect(() => {
-    async function getData() {
-      const result = await fetchQuestionsAPI();
-      if (result.success) {
-        const formattedQuestions = result.questions.map((q) => ({
-          ...q,
-          exam: {
-            _id: q.exam,
-            title: examIdToTitle[q.exam] || "Unknown Exam",
-          },
-        }));
-        setQuestions(formattedQuestions);
-      } else {
-        console.error(result.message);
-      }
-      setLoading(false);
-    }
-
-    getData();
-  }, []);
-
-  const handleShow = (q) => alert("Showing: " + q.text);
-  const handleEdit = (q) => alert("Editing: " + q.text);
-  const handleDelete = (id) => {
-    setQuestions((prev) => prev.filter((q) => q._id !== id));
-  };
+  // const questions = (data?.questions || []).map((q) => ({
+  //   ...q,
+  //   exam: {
+  //     _id: q.exam,
+  //     title: examIdToTitle[q.exam] || "Unknown Exam",
+  //   },
+  // }));
+const questions = data || [];
 
   const filteredQuestions = questions.filter((q) => {
-    const matchesExam =
+    const matchExam =
       selectedExam === "all" || q.exam?.title === selectedExam;
-    const matchesType = selectedType === "all" || q.type === selectedType;
-    return matchesExam && matchesType;
+    const matchType = selectedType === "all" || q.type === selectedType;
+    return matchExam && matchType;
   });
 
   const uniqueExams = [...new Set(questions.map((q) => q.exam?.title))];
   const uniqueTypes = [...new Set(questions.map((q) => q.type))];
+
+  const handleShow = (q) => alert("Showing: " + q.text);
+  const handleEdit = (q) => alert("Editing: " + q.text);
+  const handleDelete = (id) => console.log("Delete question:", id);
 
   return (
     <div className="space-y-6">
@@ -105,9 +84,13 @@ export default function Questions() {
         </div>
       </div>
 
-      {/* Table */}
-      {loading ? (
+      {/* Table or loading/error */}
+      {isLoading ? (
         <p className="text-muted-foreground">Loading questions...</p>
+      ) : isError ? (
+        <p className="text-destructive">Error loading questions</p>
+      ) : filteredQuestions.length === 0 ? (
+        <p className="text-muted-foreground">No questions found</p>
       ) : (
         <QuestionsTable
           questions={filteredQuestions}
