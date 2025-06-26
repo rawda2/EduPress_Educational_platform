@@ -5,6 +5,11 @@ import NotFound from "@/pages/NotFound";
 import ScrollToTop from "@/components/ScrollToTop";
 import SuspenseFallback from "@/components/SuspenseFallback";
 
+import Lessons from "@/pages/dashboard/Lessons";
+import Exams from "@/pages/dashboard/Exams";
+import Students from "@/pages/dashboard/Students";
+import Questions from "@/pages/dashboard/Questions";
+
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
 const ProfileLayout = lazy(() => import("@/layouts/ProfileLayout"));
@@ -16,6 +21,8 @@ const Profile = lazy(() => import("@/pages/Profile"));
 const Register = lazy(() => import("@/pages/Register"));
 const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+
+
 
 export default function AppRouter() {
   return (
@@ -105,14 +112,46 @@ export default function AppRouter() {
             </SuspenseFallback>
           }
         >
-          <Route
-            index
-            element={
-              <SuspenseFallback>
-                <DashboardHome />
-              </SuspenseFallback>
-            }
-          />
+                <Route
+                  index
+                  element={
+                    <SuspenseFallback>
+                      <DashboardHome />
+                    </SuspenseFallback>
+                  }
+                />
+                <Route
+          path="lessons"
+          element={
+            <SuspenseFallback>
+              <Lessons />
+            </SuspenseFallback>
+          }
+        />
+        <Route
+          path="exams"
+          element={
+            <SuspenseFallback>
+              <Exams />
+            </SuspenseFallback>
+          }
+        />
+        <Route
+          path="students"
+          element={
+            <SuspenseFallback>
+              <Students />
+            </SuspenseFallback>
+          }
+        />
+         <Route
+          path="questions"
+          element={
+            <SuspenseFallback>
+              <Questions />
+            </SuspenseFallback>
+          }
+        />
           {/* <Route path="settings" element={<DashboardSettings />} /> */}
         </Route>
 
