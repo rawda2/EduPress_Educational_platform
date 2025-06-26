@@ -10,7 +10,7 @@ export default function SubmitBtn({
   return (
     <Button
       type="submit"
-      className={`bg-foreground hover:bg-[#0a273d] hover:[&>svg]:translate-x-1 [&>svg]:transition-all w-fit flex items-center !p-6 text-lg gap-4 font-bold ${className}`}
+      className={`bg-foreground hover:bg-[#0a273d] w-fit flex items-center !p-4 gap-4 font-bold ${className}`}
       disabled={disabled}
       {...rest}
     >

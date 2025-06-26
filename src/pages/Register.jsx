@@ -38,8 +38,8 @@ export default function Register() {
 
   return (
     <Form {...form}>
-      <div className="space-y-20 w-[80%] ml-auto">
-        <h1 className="text-4xl text-center font-bold">Create your account</h1>
+      <div className="max-lg:col-span-2 space-y-20 w-[80%] mx-auto">
+        <h1 className="lg:text-3xl text-xl text-center font-bold">Create your account</h1>
         <form
           className="flex flex-col w-full gap-6 [&_label]:font-bold [&_label]:text-lg"
           onSubmit={form.handleSubmit(onSubmit)}
@@ -160,7 +160,7 @@ export default function Register() {
           </SubmitBtn>
         </form>
       </div>
-      <div className="h-dvh">
+      <div className="max-lg:hidden h-dvh">
         <img
           src="/register.jpg"
           alt="Description of image"
