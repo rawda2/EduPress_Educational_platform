@@ -14,7 +14,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import SubmitBtn from "@/components/SubmitBtn";
 import { Link } from "react-router";
-import { registerUser } from "@/features/auth/useRegister";
+import { registerUser } from "@/services/AuthAPI";
 
 export default function Register() {
   const form = useForm({

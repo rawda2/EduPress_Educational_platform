@@ -13,34 +13,34 @@ import {
 import { Input } from "@/components/ui/input";
 import SubmitBtn from "@/components/SubmitBtn";
 import { useState } from "react";
-import { forgotPassword } from "@/features/auth/useForgotPassword";
 import { ResetPasswordSchema } from "@/validations/ResetPasswordSchema";
 import LoginSuccess from "./LoginSuccess";
 import { Eye, EyeOff } from "lucide-react";
+import { forgotPassword, resetPassword } from "@/services/AuthAPI";
 
 export default function ForgotPassword() {
-  const [resetPassword, setResetPassword] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
   const [actionSuccess, setActionSuccess] = useState(false);
   // toggle the password visibility
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(
-      resetPassword ? ResetPasswordSchema : ForgotPasswordSchema
+      showResetPassword ? ResetPasswordSchema : ForgotPasswordSchema
     ),
-    defaultValues: resetPassword
+    defaultValues: showResetPassword
       ? { email: "", newPassword: "", otp: "", cpassword: "" }
       : { email: "" },
   });
 
   // handle forgot password submission
   const handleForgotPassword = async (data) => {
-    await forgotPassword(data, form, setResetPassword);
+    await forgotPassword(data, form, setShowResetPassword);
   };
 
   // handle reset password submission
   const handleResetPassword = async (data) => {
-    await resetPassword(data, form, setActionSuccess);
+    await resetPassword(setActionSuccess, data, form);
   };
 
   // if the user is already logged in, redirect to this page or something id ont fucking know
@@ -52,7 +52,7 @@ export default function ForgotPassword() {
     <Form {...form}>
       <div className="w-[80%] ms-auto mt-20 [&_label]:font-bold [&_label]:text-lg">
         <h1 className="text-3xl font-bold mb-8 text-center">Forgot Password</h1>
-        {resetPassword ? (
+        {showResetPassword ? (
           <form
             onSubmit={form.handleSubmit(handleResetPassword)}
             className="space-y-6"
@@ -131,7 +131,7 @@ export default function ForgotPassword() {
             </form>
             <button
               className="!mt-4 underline cursor-pointer"
-              onClick={() => setResetPassword(true)}
+              onClick={() => setShowResetPassword(true)}
             >
               you got the OTP code?
             </button>

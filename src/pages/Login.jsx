@@ -15,7 +15,7 @@ import { LoginSchema } from "@/validations/LoginSchema";
 import SubmitBtn from "@/components/SubmitBtn";
 import { Link } from "react-router";
 import LoginSuccess from "./LoginSuccess";
-import { loginUser } from "@/features/auth/useLogin";
+import { loginUser } from "@/services/AuthAPI";
 
 export default function Login() {
   const form = useForm({

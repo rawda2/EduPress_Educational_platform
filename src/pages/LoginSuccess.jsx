@@ -12,9 +12,15 @@ export default function LoginSuccess({ login, resetPassword }) {
           ? "You have successfully reset your password!"
           : ""}
       </h1>
-      <Link to="/profile" className="underline hover:text-blue-900">
-        view profile
-      </Link>
+      {login ? (
+        <Link to="/profile" className="underline hover:text-blue-900">
+          view profile
+        </Link>
+      ) : (
+        <Link to="/auth" className="underline hover:text-blue-900">
+          login now
+        </Link>
+      )}
     </div>
   );
 }
