@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import NotFound from "@/pages/NotFound";
 import ScrollToTop from "@/components/ScrollToTop";
 import SuspenseFallback from "@/components/SuspenseFallback";
+import { Toaster } from "sonner";
 
 import Lessons from "@/pages/dashboard/Lessons";
 import Exams from "@/pages/dashboard/Exams";
@@ -158,6 +159,7 @@ export default function AppRouter() {
         {/* 404 Page */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }
