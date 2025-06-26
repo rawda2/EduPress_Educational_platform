@@ -288,4 +288,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* auth styles */
+  .auth-input {
+    @apply border !border-gray-300 px-2 py-3 rounded-md placeholder:!text-gray-400;
+  }
+  .input-icon {
+    @apply absolute rounded-full transition-all duration-300 hover:bg-gray-200 right-2 top-1/2 -translate-y-1/2 p-3 z-10 h-[90%] flex items-center justify-center cursor-pointer;
+  }
 }
