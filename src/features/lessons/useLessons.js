@@ -1,3 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
+
+import { getAllLessons } from "@/services/lessonsAPI";
+
 export default function useLessons() {
-  return null;
+  const {
+    isLoading,
+    error,
+    data: lessons,
+  } = useQuery({
+    queryKey: ["lessons"],
+    queryFn: getAllLessons,
+  });
+
+  return { isLoading, error, lessons };
 }
