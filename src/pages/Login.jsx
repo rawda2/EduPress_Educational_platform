@@ -39,7 +39,7 @@ export default function Login() {
 
   return (
     <Form {...form}>
-      <div className="max-lg:col-span-2 order-1 space-y-20 w-[80%] mx-auto">
+      <div className="max-lg:col-span-2 order-1 space-y-20 w-[80%] mx-auto flex flex-col justify-center">
         <h1 className="lg:text-3xl text-xl text-center font-bold">
           Sign in to your account
         </h1>

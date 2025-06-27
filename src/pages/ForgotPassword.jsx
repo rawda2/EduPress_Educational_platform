@@ -50,7 +50,7 @@ export default function ForgotPassword() {
 
   return (
     <Form {...form}>
-      <div className="max-lg:col-span-2 w-[80%] mx-auto [&_label]:font-bold [&_label]:text-lg">
+      <div className="max-lg:col-span-2 w-[80%] mx-auto [&_label]:font-bold [&_label]:text-lg flex flex-col justify-center">
         <h1 className="lg:text-3xl text-xl font-bold mb-8 text-center">
           Forgot Password
         </h1>
