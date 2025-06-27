@@ -15,7 +15,7 @@ import { LoginSchema } from "@/validations/LoginSchema";
 import SubmitBtn from "@/components/SubmitBtn";
 import { Link } from "react-router";
 import LoginSuccess from "./LoginSuccess";
-import { loginUser } from "@/features/auth/useLogin";
+import { loginUser } from "@/services/AuthAPI";
 
 export default function Login() {
   const form = useForm({
@@ -39,8 +39,8 @@ export default function Login() {
 
   return (
     <Form {...form}>
-      <div className="order-1 space-y-20 w-[80%] mr-auto">
-        <h1 className="text-4xl text-center font-bold">
+      <div className="max-lg:col-span-2 order-1 space-y-20 w-[80%] mx-auto">
+        <h1 className="lg:text-3xl text-xl text-center font-bold">
           Sign in to your account
         </h1>
         <form
@@ -102,7 +102,7 @@ export default function Login() {
           </SubmitBtn>
         </form>
       </div>
-      <div className="h-dvh">
+      <div className="h-dvh max-lg:hidden">
         <img
           src="/login.jpg"
           alt="Description of image"
