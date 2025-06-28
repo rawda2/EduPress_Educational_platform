@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 
 import NotFound from "@/pages/NotFound";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -13,7 +13,9 @@ const ProfileLayout = lazy(() => import("@/layouts/ProfileLayout"));
 const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"));
 
 const Home = lazy(() => import("@/pages/Home"));
+const About = lazy(() => import("@/pages/About"));
 const Login = lazy(() => import("@/pages/Login"));
+const Lessons = lazy(() => import("@/pages/Lessons"));
 const Profile = lazy(() => import("@/pages/Profile"));
 const Register = lazy(() => import("@/pages/Register"));
 const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
@@ -52,6 +54,22 @@ export default function AppRouter() {
               </SuspenseFallback>
             }
           />
+          <Route
+            path="about"
+            element={
+              <SuspenseFallback>
+                <About />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="lessons"
+            element={
+              <SuspenseFallback>
+                <Lessons />
+              </SuspenseFallback>
+            }
+          />
         </Route>
 
         {/* Auth Layout */}
@@ -63,8 +81,9 @@ export default function AppRouter() {
             </SuspenseFallback>
           }
         >
+          <Route index element={<Navigate to="login" replace />} />
           <Route
-            index
+            path="login"
             element={
               <SuspenseFallback>
                 <Login />

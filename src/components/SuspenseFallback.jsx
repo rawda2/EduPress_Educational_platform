@@ -5,8 +5,8 @@ export default function SuspenseFallback({ children }) {
   return (
     <Suspense
       fallback={
-        <div className="flex col-span-2 justify-center items-center min-h-[calc(100vh-4rem)]">
-          <Loader2 className="animate-spin size-6" />
+        <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
+          <Loader2 className="animate-spin size-10" />
         </div>
       }
     >
