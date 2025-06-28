@@ -6,10 +6,6 @@ import ScrollToTop from "@/components/ScrollToTop";
 import SuspenseFallback from "@/components/SuspenseFallback";
 import { Toaster } from "sonner";
 
-import Lessons from "@/pages/dashboard/Lessons";
-import Exams from "@/pages/dashboard/Exams";
-import Students from "@/pages/dashboard/Students";
-import Questions from "@/pages/dashboard/Questions";
 
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
@@ -22,6 +18,14 @@ const Profile = lazy(() => import("@/pages/Profile"));
 const Register = lazy(() => import("@/pages/Register"));
 const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+
+const DashLessons = lazy(() => import("@/pages/dashboard/dashLessons"));
+const DashExams = lazy(() => import("@/pages/dashboard/dashExams"));
+const DashQuestions = lazy(() => import("@/pages/dashboard/dashQuestions"));
+const DashStudents = lazy(() => import("@/pages/dashboard/dashStudents"));
+
+
+
 
 const Unauthorized = lazy(() => import ("@/pages/Unauthorized"))
 
@@ -126,7 +130,7 @@ export default function AppRouter() {
           path="lessons"
           element={
             <SuspenseFallback>
-              <Lessons />
+              <DashLessons />
             </SuspenseFallback>
           }
         />
@@ -134,7 +138,7 @@ export default function AppRouter() {
           path="exams"
           element={
             <SuspenseFallback>
-              <Exams />
+              <DashExams />
             </SuspenseFallback>
           }
         />
@@ -142,7 +146,7 @@ export default function AppRouter() {
           path="students"
           element={
             <SuspenseFallback>
-              <Students />
+              <DashStudents />
             </SuspenseFallback>
           }
         />
@@ -150,7 +154,7 @@ export default function AppRouter() {
           path="questions"
           element={
             <SuspenseFallback>
-              <Questions />
+              <DashQuestions />
             </SuspenseFallback>
           }
         />
