@@ -11,7 +11,7 @@ import LessonsTable from "@/features/admin/LessonsTable";
 import { useLessons } from "@/hooks/admin/useLessons";
 import React, { useState} from "react";
 
-export default function Lessons() {
+export default function DashLessons() {
   const { data, isLoading, isError } = useLessons();
   const [selectedClassLevel, setSelectedClassLevel] = useState("all");
 
@@ -26,6 +26,8 @@ export default function Lessons() {
   const handleEdit = (lesson) => console.log("Edit lesson:", lesson);
   const handleDelete = (id) => console.log("Delete lesson with id:", id);
 
+const uniqueGrades = [...new Set(lessons.map((l) => l.classLevel))];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -38,15 +40,18 @@ export default function Lessons() {
 
       <div className="w-[200px]">
         <Select value={selectedClassLevel} onValueChange={setSelectedClassLevel}>
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by class" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Grades</SelectItem>
-            <SelectItem value="grade-5">Grade 5</SelectItem>
-            <SelectItem value="grade-6">Grade 6</SelectItem>
-          </SelectContent>
-        </Select>
+  <SelectTrigger>
+    <SelectValue placeholder="Filter by class" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="all">All Grades</SelectItem>
+    {uniqueGrades.map((grade) => (
+      <SelectItem key={grade} value={grade}>
+        {grade}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
       </div>
 
       {isLoading ? (
