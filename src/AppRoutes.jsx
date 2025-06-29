@@ -1,15 +1,11 @@
 import { lazy } from "react";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 
 import NotFound from "@/pages/NotFound";
 import ScrollToTop from "@/components/ScrollToTop";
 import SuspenseFallback from "@/components/SuspenseFallback";
 import { Toaster } from "sonner";
 
-import Lessons from "@/pages/dashboard/Lessons";
-import Exams from "@/pages/dashboard/Exams";
-import Students from "@/pages/dashboard/Students";
-import Questions from "@/pages/dashboard/Questions";
 
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
@@ -17,7 +13,9 @@ const ProfileLayout = lazy(() => import("@/layouts/ProfileLayout"));
 const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"));
 
 const Home = lazy(() => import("@/pages/Home"));
+const About = lazy(() => import("@/pages/About"));
 const Login = lazy(() => import("@/pages/Login"));
+const Lessons = lazy(() => import("@/pages/Lessons"));
 const Profile = lazy(() => import("@/pages/Profile"));
 const Register = lazy(() => import("@/pages/Register"));
 const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
@@ -25,6 +23,14 @@ const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 const StartExam = lazy(() => import("@/pages/StartExam"));
 const TakeExam = lazy(() => import("@/pages/TakeExam"));
 const ExamResults = lazy(() => import("@/pages/ExamResults"));
+
+const DashLessons = lazy(() => import("@/pages/dashboard/dashLessons"));
+const DashExams = lazy(() => import("@/pages/dashboard/dashExams"));
+const DashQuestions = lazy(() => import("@/pages/dashboard/dashQuestions"));
+const DashStudents = lazy(() => import("@/pages/dashboard/dashStudents"));
+
+
+
 
 const Unauthorized = lazy(() => import ("@/pages/Unauthorized"))
 
@@ -51,6 +57,22 @@ export default function AppRouter() {
               </SuspenseFallback>
             }
           />
+          <Route
+            path="about"
+            element={
+              <SuspenseFallback>
+                <About />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="lessons"
+            element={
+              <SuspenseFallback>
+                <Lessons />
+              </SuspenseFallback>
+            }
+          />
         </Route>
 
         {/* Auth Layout */}
@@ -62,8 +84,9 @@ export default function AppRouter() {
             </SuspenseFallback>
           }
         >
+          <Route index element={<Navigate to="login" replace />} />
           <Route
-            index
+            path="login"
             element={
               <SuspenseFallback>
                 <Login />
@@ -155,7 +178,7 @@ export default function AppRouter() {
           path="lessons"
           element={
             <SuspenseFallback>
-              <Lessons />
+              <DashLessons />
             </SuspenseFallback>
           }
         />
@@ -163,7 +186,7 @@ export default function AppRouter() {
           path="exams"
           element={
             <SuspenseFallback>
-              <Exams />
+              <DashExams />
             </SuspenseFallback>
           }
         />
@@ -171,7 +194,7 @@ export default function AppRouter() {
           path="students"
           element={
             <SuspenseFallback>
-              <Students />
+              <DashStudents />
             </SuspenseFallback>
           }
         />
@@ -179,7 +202,7 @@ export default function AppRouter() {
           path="questions"
           element={
             <SuspenseFallback>
-              <Questions />
+              <DashQuestions />
             </SuspenseFallback>
           }
         />

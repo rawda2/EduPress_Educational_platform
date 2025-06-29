@@ -10,7 +10,7 @@ import {
 import StudentsTable from "@/features/admin/StudentsTable";
 import { useAllUsers } from "@/hooks/admin/useAllUsers";
 
-export default function Students() {
+export default function DashStudents() {
   const { data, isLoading, isError } = useAllUsers();
   const [searchType, setSearchType] = useState("name");
   const [searchTerm, setSearchTerm] = useState("");
