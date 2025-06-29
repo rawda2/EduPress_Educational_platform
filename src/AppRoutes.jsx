@@ -20,6 +20,9 @@ const Profile = lazy(() => import("@/pages/Profile"));
 const Register = lazy(() => import("@/pages/Register"));
 const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+const StartExam = lazy(() => import("@/pages/StartExam"));
+const TakeExam = lazy(() => import("@/pages/TakeExam"));
+const ExamResults = lazy(() => import("@/pages/ExamResults"));
 
 const DashLessons = lazy(() => import("@/pages/dashboard/dashLessons"));
 const DashExams = lazy(() => import("@/pages/dashboard/dashExams"));
@@ -127,6 +130,32 @@ export default function AppRouter() {
           />
           {/* <Route path="settings" element={<div>Profile Settings</div>} /> */}
         </Route>
+
+        {/* Exam Routes */}
+        <Route
+          path="/start/:examId"
+          element={
+            <SuspenseFallback>
+              <StartExam />
+            </SuspenseFallback>
+          }
+        />
+        <Route
+          path="/exam/:examId"
+          element={
+            <SuspenseFallback>
+              <TakeExam />
+            </SuspenseFallback>
+          }
+        />
+        <Route
+          path="/exams/score/:examId"
+          element={
+            <SuspenseFallback>
+              <ExamResults />
+            </SuspenseFallback>
+          }
+        />
 
         {/* Dashboard Layout */}
         <Route

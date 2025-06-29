@@ -1,8 +1,5 @@
 const BASE_URL = "https://edu-master-delta.vercel.app";
 
-
-
-
 const ALL_ADMIN_URL = `${BASE_URL}/admin/all-admin`;
 const USER_URL = `${BASE_URL}/user`;
 const ALL_USERS_URL =`${BASE_URL}/admin/all-user`;
@@ -33,5 +30,6 @@ export {
   ALL_EXAMS_URL,
   ALL_QUESTIONS_URL,
 };
+
 
 
