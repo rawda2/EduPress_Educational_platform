@@ -11,9 +11,21 @@ const FORGOT_PASSWORD_URL = `${USER_URL}/forgot-password`;
 const RESET_PASSWORD_URL = `${USER_URL}/reset-password`;
 
 const ALL_LESSONS_URL = `${BASE_URL}/lesson`;
-const ALL_EXAMS_URL =`${BASE_URL}/exam`;
-const ALL_QUESTIONS_URL =`${BASE_URL}/question`;
 
+
+// Exams
+const ALL_EXAMS_URL = `${BASE_URL}/exam`;
+const CREATE_EXAM_URL = `${BASE_URL}/exam`; // POST
+const UPDATE_EXAM_URL = (id) => `${BASE_URL}/exam/${id}`; // PUT
+const DELETE_EXAM_URL = (id) => `${BASE_URL}/exam/${id}`; // DELETE
+const GET_SINGLE_EXAM_URL = (id) => `${BASE_URL}/exam/${id}`; // GET
+
+// Questions
+const ALL_QUESTIONS_URL = `${BASE_URL}/question`;
+const CREATE_QUESTION_URL = `${BASE_URL}/question`; // POST
+const UPDATE_QUESTION_URL = (id) => `${BASE_URL}/question/${id}`; // PUT
+const DELETE_QUESTION_URL = (id) => `${BASE_URL}/question/${id}`; // DELETE
+const GET_SINGLE_QUESTION_URL = (id) => `${BASE_URL}/question/${id}`; // GET
 
 export {
   BASE_URL,
@@ -27,8 +39,21 @@ export {
   RESET_PASSWORD_URL,
 
   ALL_LESSONS_URL,
+
+   // Exams
   ALL_EXAMS_URL,
+  CREATE_EXAM_URL,
+  UPDATE_EXAM_URL,
+  DELETE_EXAM_URL,
+  GET_SINGLE_EXAM_URL,
+
+  // Questions
   ALL_QUESTIONS_URL,
+  CREATE_QUESTION_URL,
+  UPDATE_QUESTION_URL,
+  DELETE_QUESTION_URL,
+  GET_SINGLE_QUESTION_URL,
+
 };
 
 

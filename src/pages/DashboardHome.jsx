@@ -2,8 +2,8 @@ import StatsCards from "@/features/admin/StatsCards";
 import QuickActions from "@/features/admin/QuickActions";
 import { useAllUsers } from "@/hooks/admin/useAllUsers";
 import { useLessons } from "@/hooks/admin/useLessons";
-import { useExams } from "@/hooks/admin/useExams";
-import { useQuestions } from "@/hooks/admin/useQuestions";
+import { useExams } from "@/hooks/admin/exams/useExams";
+import { useQuestions } from "@/hooks/admin/questions/useQuestions";
 
 export default function DashboardHome() {
   const { data: users = [], isLoading: loadingUsers } = useAllUsers();

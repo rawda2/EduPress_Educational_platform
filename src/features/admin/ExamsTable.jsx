@@ -69,11 +69,8 @@ export default function ExamsTable({ exams, onShow, onEdit, onDelete }) {
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => {
-                    if (confirm("Are you sure you want to delete this exam?")) {
-                      onDelete(exam._id);
-                    }
-                  }}
+                  onClick={() => onDelete(exam)}
+
                 >
                   <Trash size={16} className="text-red-500" />
                 </Button>
