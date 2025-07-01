@@ -5,6 +5,7 @@ import NotFound from "@/pages/NotFound";
 import ScrollToTop from "@/components/ScrollToTop";
 import SuspenseFallback from "@/components/SuspenseFallback";
 import { Toaster } from "sonner";
+import Checkout from "./pages/Checkout";
 
 
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
@@ -16,6 +17,7 @@ const Home = lazy(() => import("@/pages/Home"));
 const About = lazy(() => import("@/pages/About"));
 const Login = lazy(() => import("@/pages/Login"));
 const Lessons = lazy(() => import("@/pages/Lessons"));
+const SingleLesson = lazy(()=> import("@/pages/SingleLesson"))
 const Profile = lazy(() => import("@/pages/Profile"));
 const Register = lazy(() => import("@/pages/Register"));
 const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
@@ -67,6 +69,22 @@ export default function AppRouter() {
             element={
               <SuspenseFallback>
                 <Lessons />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="lesson/:id"
+            element={
+              <SuspenseFallback>
+                <SingleLesson />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="checkout"
+            element={
+              <SuspenseFallback>
+                <Checkout />
               </SuspenseFallback>
             }
           />
