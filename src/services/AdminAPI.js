@@ -150,13 +150,15 @@ export async function fetchQuestionsAPI() {
 
 export async function updateQuestionAPI(id, formData) {
   try {
-    const response = await axios.put(UPDATE_QUESTION_URL(id), formData, getTokenHeader());
-    return { success: true, question: response.data?.data };
+    const res = await axios.put(UPDATE_QUESTION_URL(id), formData, getTokenHeader());
+    return res.data;
   } catch (error) {
     console.error("Failed to update question:", error);
-    return { success: false, message: error.response?.data?.message || "Error updating question" };
+    throw error;
   }
 }
+
+
 
 export async function deleteQuestionAPI(id) {
   try {

@@ -73,9 +73,8 @@ export default function QuestionsTable({ questions, onShow, onEdit, onDelete }) 
                   size="sm"
                   variant="ghost"
                   onClick={() => {
-                    if (confirm("Are you sure you want to delete this question?")) {
                       onDelete(q._id);
-                    }
+                    
                   }}
                 >
                   <Trash size={16} className="text-red-500" />

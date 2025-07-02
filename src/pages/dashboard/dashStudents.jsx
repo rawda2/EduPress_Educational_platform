@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -9,11 +9,15 @@ import {
 } from "@/components/ui/select";
 import StudentsTable from "@/features/admin/StudentsTable";
 import { useAllUsers } from "@/hooks/admin/useAllUsers";
+import ViewStudentDetails from "@/features/admin/ViewStudentDetails";
+import { X } from "lucide-react";
 
 export default function DashStudents() {
   const { data, isLoading, isError } = useAllUsers();
   const [searchType, setSearchType] = useState("name");
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewingStudent, setViewingStudent] = useState(null);
+  const modalRef = useRef();
 
   const students = (data || []).filter((u) => u.role === "user");
 
@@ -29,6 +33,12 @@ export default function DashStudents() {
     }
     return true;
   });
+
+  const handleBackdropClick = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      setViewingStudent(null);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -62,9 +72,29 @@ export default function DashStudents() {
       ) : isError ? (
         <p className="text-destructive">Error loading students</p>
       ) : (
-        <StudentsTable students={filteredStudents} />
+        <StudentsTable students={filteredStudents} onShow={setViewingStudent} />
+      )}
+
+      {/* View Student Modal */}
+      {viewingStudent && (
+        <div
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={handleBackdropClick}
+        >
+          <div
+            ref={modalRef}
+            className="relative bg-white dark:bg-[#1f2937] rounded-xl p-6 max-w-2xl w-full shadow-lg border border-gray-300 dark:border-gray-700"
+          >
+            <button
+              onClick={() => setViewingStudent(null)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-600"
+            >
+              <X />
+            </button>
+            <ViewStudentDetails student={viewingStudent} />
+          </div>
+        </div>
       )}
     </div>
   );
 }
-

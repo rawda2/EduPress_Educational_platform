@@ -31,7 +31,7 @@ export default function AddQuestionForm({ exams = [], onSuccess }) {
     defaultValues: {
       text: "",
       type: "",
-      options: ["", "", "", ""],
+      options: [],
       correctAnswer: "",
       exam: "",
       points: "",
@@ -41,12 +41,11 @@ export default function AddQuestionForm({ exams = [], onSuccess }) {
   const watchType = watch("type");
   const { mutate: addQuestion, isPending } = useAddQuestion();
 
-  // ✅ تحديث الخيارات تلقائيًا عند تغيير النوع
   useEffect(() => {
     if (watchType === "true-false") {
       setValue("options", ["True", "False"]);
     } else if (watchType === "short-answer") {
-      setValue("options", []); // or undefined if your schema allows it
+      setValue("options", []);
     } else {
       setValue("options", ["", "", "", ""]);
     }
@@ -58,23 +57,21 @@ export default function AddQuestionForm({ exams = [], onSuccess }) {
     updated[index] = value;
     setValue("options", updated);
   };
-const onSubmitForm = (data) => {
-  if (data.type === "true-false") {
-    data.options = ["True", "False"];
-  } else if (data.type === "short-answer") {
-    delete data.options; // نحذفها نهائيًا
-  }
 
-  console.log("✅ Submitting question:", data);
+  const onSubmitForm = (data) => {
+    if (data.type !== "multiple-choice") {
+      delete data.options;
+    }
 
-  addQuestion(data, {
-    onSuccess: () => {
-      reset();
-      onSuccess?.();
-    },
-  });
-};
+    console.log("✅ Submitting question:", data);
 
+    addQuestion(data, {
+      onSuccess: () => {
+        reset();
+        onSuccess?.(); // ✅ Close the form via parent callback
+      },
+    });
+  };
 
   const onSubmitError = (errors) => {
     console.log("❌ Validation Errors:", errors);
@@ -152,10 +149,7 @@ const onSubmitForm = (data) => {
             )}
           />
         ) : (
-          <Textarea
-            {...register("correctAnswer")}
-            placeholder="Write the correct answer"
-          />
+          <Textarea {...register("correctAnswer")} placeholder="Write the correct answer" />
         )}
         {errors.correctAnswer && (
           <p className="text-red-500 text-sm">{errors.correctAnswer.message}</p>

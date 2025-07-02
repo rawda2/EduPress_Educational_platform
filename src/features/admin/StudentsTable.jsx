@@ -9,7 +9,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Eye, Pencil, Trash } from "lucide-react";
+import { Eye } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -21,9 +21,8 @@ import {
 
 const ITEMS_PER_PAGE = 5;
 
-export default function StudentsTable({ students, onShow, onEdit, onDelete }) {
+export default function StudentsTable({ students, onShow }) {
   const [currentPage, setCurrentPage] = useState(1);
-
   const totalPages = Math.ceil(students.length / ITEMS_PER_PAGE);
 
   const paginatedStudents = students.slice(
@@ -52,9 +51,10 @@ export default function StudentsTable({ students, onShow, onEdit, onDelete }) {
             <TableHead>Class Level</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead> {/* ✅ Added */}
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {paginatedStudents.map((s) => (
             <TableRow key={s._id}>
@@ -77,19 +77,14 @@ export default function StudentsTable({ students, onShow, onEdit, onDelete }) {
                   {s.isVerified ? "Active" : "Inactive"}
                 </span>
               </TableCell>
-              <TableCell className="space-x-2">
-                <Button size="sm" variant="ghost" onClick={() => onShow?.(s)}>
-                  <Eye size={16} />
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => onEdit?.(s)}>
-                  <Pencil size={16} />
-                </Button>
+              <TableCell>
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => onDelete?.(s)}
+                  onClick={() => onShow?.(s)}
+                  title="View Details"
                 >
-                  <Trash size={16} className="text-red-500" />
+                  <Eye size={16} />
                 </Button>
               </TableCell>
             </TableRow>
@@ -104,7 +99,9 @@ export default function StudentsTable({ students, onShow, onEdit, onDelete }) {
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => handlePageChange(currentPage - 1)}
-                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                className={
+                  currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
 
@@ -122,7 +119,11 @@ export default function StudentsTable({ students, onShow, onEdit, onDelete }) {
             <PaginationItem>
               <PaginationNext
                 onClick={() => handlePageChange(currentPage + 1)}
-                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                className={
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
               />
             </PaginationItem>
           </PaginationContent>
