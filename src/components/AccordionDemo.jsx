@@ -3,59 +3,31 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
+import { Label } from "@radix-ui/react-label";
+import { Lock, VideoIcon } from "lucide-react";
+import { Checkbox } from "./ui/checkbox";
 
-export function AccordionDemo() {
+export function AccordionDemo({ title ,disabled}) {
   return (
     <Accordion
       type="single"
       collapsible
-      className="w-full"
+      className="w-full p-2 rounded-lg border shadow-md"
       defaultValue="item-1"
     >
       <AccordionItem value="item-1">
-        <AccordionTrigger>Product Information</AccordionTrigger>
+        <AccordionTrigger>{title}</AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            Our flagship product combines cutting-edge technology with sleek
-            design. Built with premium materials, it offers unparalleled
-            performance and reliability.
-          </p>
-          <p>
-            Key features include advanced processing capabilities, and an
-            intuitive user interface designed for both beginners and experts.
-          </p>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-2">
-        <AccordionTrigger>Shipping Details</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            We offer worldwide shipping through trusted courier partners.
-            Standard delivery takes 3-5 business days, while express shipping
-            ensures delivery within 1-2 business days.
-          </p>
-          <p>
-            All orders are carefully packaged and fully insured. Track your
-            shipment in real-time through our dedicated tracking portal.
-          </p>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-3">
-        <AccordionTrigger>Return Policy</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            We stand behind our products with a comprehensive 30-day return
-            policy. If you&apos;re not completely satisfied, simply return the
-            item in its original condition.
-          </p>
-          <p>
-            Our hassle-free return process includes free return shipping and
-            full refunds processed within 48 hours of receiving the returned
-            item.
-          </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-start gap-3">
+              <Checkbox id="toggle" className="mt-1" disabled={disabled} />
+              <Label htmlFor="toggle">Lesson 1</Label>
+            </div>
+            {disabled ? <Lock /> : <VideoIcon />}
+          </div>
         </AccordionContent>
       </AccordionItem>
     </Accordion>
-  )
+  );
 }

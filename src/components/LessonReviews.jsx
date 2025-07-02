@@ -35,25 +35,40 @@ const reviews = [
   },
 ];
 
+const starsRating = [
+  { num: 5, percent: 60 },
+  { num: 4, percent: 20 },
+  { num: 3, percent: 10 },
+  { num: 2, percent: 5 },
+  { num: 1, percent: 5 },
+];
+
 export const LessonReviews = () => {
   return (
     <div id="Reviews" className="w-full py-7">
-      <h1 className="font-extrabold text-2xl mb-3">Reviews</h1>
-      <div className="flex items-start justify-between w-full gap-12">
-        <div>
-          <h1 className="flex items-center gap-2">
+      <div className="flex items-start justify-between w-full gap-12 max-md:flex-col">
+        <div className="w-[70%]">
+          <h1 className="flex items-center gap-2 mb-5">
             <Rating stars={4} />
             <p className="text-muted-foreground">146,951 reviews</p>
           </h1>
+          <div>
+            {starsRating.map((rating) => (
+              <div key={rating.num} className="flex items-center justify-start gap-5">
+                <Rating stars={rating.num} />
+                <p className="text-muted-foreground">{rating.percent}%</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 max-md:gap-10">
           {reviews.map((review, idx) => (
-            <div key={idx} className="flex items-start justify-start gap-10">
+            <div key={idx} className="flex items-start justify-start max-md:gap-5 md:gap-10 max-md:flex-col">
               <div className="flex flex-row items-center justify-start gap-3">
                 <div className="bg-gray-100 p-2 rounded-full text-black w-fit">
-                  <User size={50} />
+                  <User size={40} />
                 </div>
-                <p className="text-primary font-bold w-[50px]">{review.name}</p>
+                <p className="text-primary font-bold md:w-[50px]">{review.name}</p>
               </div>
               <div className="flex flex-col items-start justify-start gap-2">
                 <h1 className="flex items-center gap-2 text-gray-300">

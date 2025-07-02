@@ -5,8 +5,8 @@ import NotFound from "@/pages/NotFound";
 import ScrollToTop from "@/components/ScrollToTop";
 import SuspenseFallback from "@/components/SuspenseFallback";
 import { Toaster } from "sonner";
-import Checkout from "./pages/Checkout";
-
+import ProtectedLessonRoute from "./components/ProtectedLessonRoute";
+import PaidLesson from "./pages/PaidLesson";
 
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
@@ -17,7 +17,7 @@ const Home = lazy(() => import("@/pages/Home"));
 const About = lazy(() => import("@/pages/About"));
 const Login = lazy(() => import("@/pages/Login"));
 const Lessons = lazy(() => import("@/pages/Lessons"));
-const SingleLesson = lazy(()=> import("@/pages/SingleLesson"))
+const SingleLesson = lazy(() => import("@/pages/SingleLesson"));
 const Profile = lazy(() => import("@/pages/Profile"));
 const Register = lazy(() => import("@/pages/Register"));
 const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
@@ -31,11 +31,7 @@ const DashExams = lazy(() => import("@/pages/dashboard/dashExams"));
 const DashQuestions = lazy(() => import("@/pages/dashboard/dashQuestions"));
 const DashStudents = lazy(() => import("@/pages/dashboard/dashStudents"));
 
-
-
-
-const Unauthorized = lazy(() => import ("@/pages/Unauthorized"))
-
+const Unauthorized = lazy(() => import("@/pages/Unauthorized"));
 
 export default function AppRouter() {
   return (
@@ -76,18 +72,22 @@ export default function AppRouter() {
             }
           />
           <Route
-            path="lesson/:id"
+            path="lessons/pay/:id"
             element={
               <SuspenseFallback>
-                <SingleLesson />
+                <ProtectedLessonRoute use="payRoute">
+                  <SingleLesson />
+                </ProtectedLessonRoute>
               </SuspenseFallback>
             }
           />
           <Route
-            path="checkout"
+            path="lessons/:id"
             element={
               <SuspenseFallback>
-                <Checkout />
+                <ProtectedLessonRoute>
+                  <PaidLesson key={location.pathname} />
+                </ProtectedLessonRoute>
               </SuspenseFallback>
             }
           />
@@ -184,46 +184,46 @@ export default function AppRouter() {
             </SuspenseFallback>
           }
         >
-                <Route
-                  index
-                  element={
-                    <SuspenseFallback>
-                      <DashboardHome />
-                    </SuspenseFallback>
-                  }
-                />
-                <Route
-          path="lessons"
-          element={
-            <SuspenseFallback>
-              <DashLessons />
-            </SuspenseFallback>
-          }
-        />
-        <Route
-          path="exams"
-          element={
-            <SuspenseFallback>
-              <DashExams />
-            </SuspenseFallback>
-          }
-        />
-        <Route
-          path="students"
-          element={
-            <SuspenseFallback>
-              <DashStudents />
-            </SuspenseFallback>
-          }
-        />
-         <Route
-          path="questions"
-          element={
-            <SuspenseFallback>
-              <DashQuestions />
-            </SuspenseFallback>
-          }
-        />
+          <Route
+            index
+            element={
+              <SuspenseFallback>
+                <DashboardHome />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="lessons"
+            element={
+              <SuspenseFallback>
+                <DashLessons />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="exams"
+            element={
+              <SuspenseFallback>
+                <DashExams />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="students"
+            element={
+              <SuspenseFallback>
+                <DashStudents />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="questions"
+            element={
+              <SuspenseFallback>
+                <DashQuestions />
+              </SuspenseFallback>
+            }
+          />
           {/* <Route path="settings" element={<DashboardSettings />} /> */}
         </Route>
 
