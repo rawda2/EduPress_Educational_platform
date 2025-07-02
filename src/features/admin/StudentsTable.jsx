@@ -8,6 +8,8 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Eye, Pencil, Trash } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -19,7 +21,7 @@ import {
 
 const ITEMS_PER_PAGE = 5;
 
-export default function StudentsTable({ students }) {
+export default function StudentsTable({ students, onShow, onEdit, onDelete }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(students.length / ITEMS_PER_PAGE);
@@ -50,6 +52,7 @@ export default function StudentsTable({ students }) {
             <TableHead>Class Level</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead> {/* ✅ Added */}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -74,40 +77,57 @@ export default function StudentsTable({ students }) {
                   {s.isVerified ? "Active" : "Inactive"}
                 </span>
               </TableCell>
+              <TableCell className="space-x-2">
+                <Button size="sm" variant="ghost" onClick={() => onShow?.(s)}>
+                  <Eye size={16} />
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => onEdit?.(s)}>
+                  <Pencil size={16} />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => onDelete?.(s)}
+                >
+                  <Trash size={16} className="text-red-500" />
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
 
-      {/* Custom Pagination UI */}
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => handlePageChange(currentPage - 1)}
-              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-            />
-          </PaginationItem>
-
-          {Array.from({ length: totalPages }, (_, i) => (
-            <PaginationItem key={i}>
-              <PaginationLink
-                isActive={currentPage === i + 1}
-                onClick={() => handlePageChange(i + 1)}
-              >
-                {i + 1}
-              </PaginationLink>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => handlePageChange(currentPage - 1)}
+                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              />
             </PaginationItem>
-          ))}
 
-          <PaginationItem>
-            <PaginationNext
-              onClick={() => handlePageChange(currentPage + 1)}
-              className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  isActive={currentPage === i + 1}
+                  onClick={() => handlePageChange(i + 1)}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => handlePageChange(currentPage + 1)}
+                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 }

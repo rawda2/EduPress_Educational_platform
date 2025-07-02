@@ -1,5 +1,5 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { questionSchema } from "@/validations/QuestionSchema";
 
@@ -24,6 +24,7 @@ export default function AddQuestionForm({ exams = [], onSuccess }) {
     setValue,
     watch,
     reset,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(questionSchema),
@@ -40,29 +41,48 @@ export default function AddQuestionForm({ exams = [], onSuccess }) {
   const watchType = watch("type");
   const { mutate: addQuestion, isPending } = useAddQuestion();
 
+  // ✅ تحديث الخيارات تلقائيًا عند تغيير النوع
+  useEffect(() => {
+    if (watchType === "true-false") {
+      setValue("options", ["True", "False"]);
+    } else if (watchType === "short-answer") {
+      setValue("options", []); // or undefined if your schema allows it
+    } else {
+      setValue("options", ["", "", "", ""]);
+    }
+  }, [watchType, setValue]);
+
   const handleOptionChange = (index, value) => {
     const current = watch("options") || [];
     const updated = [...current];
     updated[index] = value;
     setValue("options", updated);
   };
+const onSubmitForm = (data) => {
+  if (data.type === "true-false") {
+    data.options = ["True", "False"];
+  } else if (data.type === "short-answer") {
+    delete data.options; // نحذفها نهائيًا
+  }
 
-  const onSubmitForm = (data) => {
-    if (data.type === "true-false") {
-      data.options = ["True", "False"];
-    }
+  console.log("✅ Submitting question:", data);
 
-    addQuestion(data, {
-      onSuccess: () => {
-        reset(); // clear form
-        onSuccess?.(); // notify parent if needed
-      },
-    });
+  addQuestion(data, {
+    onSuccess: () => {
+      reset();
+      onSuccess?.();
+    },
+  });
+};
+
+
+  const onSubmitError = (errors) => {
+    console.log("❌ Validation Errors:", errors);
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmitForm)}
+      onSubmit={handleSubmit(onSubmitForm, onSubmitError)}
       className="space-y-6 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-gray-100 p-6 rounded-xl shadow-md border border-border dark:border-gray-700 max-w-2xl mx-auto"
     >
       <h2 className="text-xl font-semibold mb-4">Add New Question</h2>
@@ -77,16 +97,22 @@ export default function AddQuestionForm({ exams = [], onSuccess }) {
       {/* Type */}
       <div className="space-y-2">
         <Label>Type</Label>
-        <Select onValueChange={(val) => setValue("type", val)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select question type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
-            <SelectItem value="true-false">True / False</SelectItem>
-            <SelectItem value="short-answer">Short Answer</SelectItem>
-          </SelectContent>
-        </Select>
+        <Controller
+          control={control}
+          name="type"
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select question type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
+                <SelectItem value="true-false">True / False</SelectItem>
+                <SelectItem value="short-answer">Short Answer</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
         {errors.type && <p className="text-red-500 text-sm">{errors.type.message}</p>}
       </div>
 
@@ -110,15 +136,21 @@ export default function AddQuestionForm({ exams = [], onSuccess }) {
       <div className="space-y-2">
         <Label>Correct Answer</Label>
         {watchType === "true-false" ? (
-          <Select onValueChange={(val) => setValue("correctAnswer", val)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select correct answer" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="True">True</SelectItem>
-              <SelectItem value="False">False</SelectItem>
-            </SelectContent>
-          </Select>
+          <Controller
+            control={control}
+            name="correctAnswer"
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select correct answer" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="True">True</SelectItem>
+                  <SelectItem value="False">False</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
         ) : (
           <Textarea
             {...register("correctAnswer")}
@@ -133,18 +165,24 @@ export default function AddQuestionForm({ exams = [], onSuccess }) {
       {/* Exam */}
       <div className="space-y-2">
         <Label>Exam</Label>
-        <Select onValueChange={(val) => setValue("exam", val)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select exam" />
-          </SelectTrigger>
-          <SelectContent>
-            {exams.map((exam) => (
-              <SelectItem key={exam._id} value={exam._id}>
-                {exam.title}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Controller
+          control={control}
+          name="exam"
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select exam" />
+              </SelectTrigger>
+              <SelectContent>
+                {exams.map((exam) => (
+                  <SelectItem key={exam._id} value={exam._id}>
+                    {exam.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
         {errors.exam && <p className="text-red-500 text-sm">{errors.exam.message}</p>}
       </div>
 

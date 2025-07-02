@@ -7,13 +7,18 @@ export const useAddQuestion = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (questionData) => createQuestionAPI(questionData), // exam ID جاي من الفورم
-    onSuccess: () => {
-      toast.success("Question added successfully");
-      queryClient.invalidateQueries(["exams"]);
+    mutationFn: (questionData) => createQuestionAPI(questionData),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success("Question added successfully");
+        queryClient.invalidateQueries(["exams"]);
+      } else {
+        toast.error(data?.message || "Failed to add question");
+      }
     },
     onError: () => {
       toast.error("Failed to add question");
     },
   });
 };
+

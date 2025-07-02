@@ -132,15 +132,21 @@ export async function fetchQuestionsAPI() {
   }
 }
 
-export async function createQuestionAPI(formData) {
-  try {
-    const response = await axios.post(CREATE_QUESTION_URL, formData, getTokenHeader());
-    return { success: true, question: response.data?.data };
-  } catch (error) {
-    console.error("Failed to create question:", error);
-    return { success: false, message: error.response?.data?.message || "Error creating question" };
+  export async function createQuestionAPI(formData) {
+    try {
+      const response = await axios.post(CREATE_QUESTION_URL, formData, getTokenHeader());
+      return {
+        success: true,
+        question: response.data?.data,
+      };
+    } catch (error) {
+      console.error("Failed to create question:", error);
+      return {
+        success: false,
+        message: error.response?.data?.message || "Error creating question",
+      };
+    }
   }
-}
 
 export async function updateQuestionAPI(id, formData) {
   try {
