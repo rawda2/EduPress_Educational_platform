@@ -7,7 +7,7 @@ export default function QuickActions() {
     <div className="flex flex-wrap gap-3">
       <Button variant="default" className="flex gap-2">
         <PlusCircle size={16} />
-        Add Admin
+        Add User
       </Button>
       <Button variant="secondary" className="flex gap-2">
         <PlusCircle size={16} />
