@@ -1,4 +1,4 @@
-import { AlertCircleIcon, Loader2 } from "lucide-react";
+import { AlertCircleIcon, FolderX, Loader2 } from "lucide-react";
 
 import LessonCard from "./LessonCard";
 import useLessons from "./useLessons";
@@ -8,7 +8,7 @@ export default function LessonsList() {
   const { isLoading, error, lessons } = useLessons();
 
   if (isLoading)
-    return <Loader2 className="animate-spin size-8 mx-auto mt-10" />;
+    return <Loader2 className="animate-spin size-8 mx-auto mt-28" />;
 
   if (error)
     return (
@@ -22,10 +22,12 @@ export default function LessonsList() {
 
   if (!lessons || lessons.length === 0)
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="mb-2 text-3xl font-bold">No Lessons Available</h1>
+      <div className="container text-center mx-auto px-4 py-28">
+        <FolderX className="mx-auto size-24 text-muted-foreground/80 stroke-1" />
+        <h1 className="mb-2 text-2xl font-bold">No Lessons Available</h1>
         <p className="text-muted-foreground">
-          Currently, there are no lessons available. Please check back later.
+          Currently, there are no lessons available in this grade. Please check
+          back later.
         </p>
       </div>
     );

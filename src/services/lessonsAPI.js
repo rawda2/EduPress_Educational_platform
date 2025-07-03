@@ -3,12 +3,15 @@ import axios from "axios";
 import { axiosErrorHandler } from "@/lib/utils";
 
 export async function getAllLessons() {
+  const token = localStorage.getItem("token");
+
+  // console.log("token: ", token);
+
   try {
     const res = await axios.get("https://edu-master-delta.vercel.app/lesson", {
       headers: {
+        token,
         "Content-Type": "application/json",
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlYW0yQGdtYWlsLmNvbSIsIl9pZCI6IjY4NTk5MjM0YzMwMmU2MTk5YmQzMjE0NiIsImlhdCI6MTc1MDk5OTcwOSwiZXhwIjoxNzUxMDg2MTA5fQ.c0amp6qm6PKDdWZF29DMVFHEAzNtv187V-S0OZD6eEs",
       },
     });
 

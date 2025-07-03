@@ -1,70 +1,100 @@
 import axios from "axios";
-import {
-  FORGOT_PASSWORD_URL,
-  LOGIN_URL,
-  RESET_PASSWORD_URL,
-  SIGNUP_URL,
-} from "./api";
 import { toast } from "sonner";
 
-// handles user login, sets form errors, and stores token on success
-export async function loginUser(data, form) {
-  try {
-    const response = await axios.post(LOGIN_URL, data);
-    form.reset();
-    localStorage.setItem("token", response.data?.token);
-    return { success: true };
-  } catch (error) {
-    const message = error.response?.data?.message;
+import {
+  LOGIN_URL,
+  SIGNUP_URL,
+  RESET_PASSWORD_URL,
+  FORGOT_PASSWORD_URL,
+  USER_URL,
+} from "./api";
 
-    if (message === "invalid credentials") {
-      form.setError("password", { message: "Password is wrong" });
-    } else if (message === "user not found") {
-      form.setError("email", {
-        message: "No user was found with this email",
-      });
-    } else if (message === "user not verified") {
-      form.setError("email", {
-        message: "Please verify your email before logging in, check your mails",
-      });
-    } else {
-      form.setError("password", {
-        message:
-          "password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number",
-      });
-    }
-    return { success: false };
-  }
+// import { axiosErrorHandler } from "@/lib/utils";
+
+// handles user login, sets form errors, and stores token on success
+// export async function loginUser(data, form) {
+//   try {
+//     const response = await axios.post(LOGIN_URL, data);
+//     form.reset();
+//     localStorage.setItem("token", response.data?.token);
+//     return { success: true };
+//   } catch (error) {
+//     const message = error.response?.data?.message;
+
+//     if (message === "invalid credentials") {
+//       form.setError("password", { message: "Password is wrong" });
+//     } else if (message === "user not found") {
+//       form.setError("email", {
+//         message: "No user was found with this email",
+//       });
+//     } else if (message === "user not verified") {
+//       form.setError("email", {
+//         message: "Please verify your email before logging in, check your mails",
+//       });
+//     } else {
+//       form.setError("password", {
+//         message:
+//           "password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number",
+//       });
+//     }
+//     return { success: false };
+//   }
+// }
+
+export async function loginUser(data) {
+  const res = await axios.post(LOGIN_URL, data);
+  if (!res.data.success) throw new Error(res.data.message);
+
+  return res.data;
+}
+
+export async function getCurrentUser(token) {
+  if (!token) throw new Error("Token not provided");
+
+  const res = await axios.get(USER_URL, {
+    headers: {
+      token,
+    },
+  });
+  if (!res.data.success) throw new Error(res.data.message);
+
+  return res.data.data;
 }
 
 // handles user registration, sets form errors, and shows toast on success or error
-export async function registerUser(userData, form) {
-  try {
-    const res = await axios.post(SIGNUP_URL, userData);
-    if (res.data.success) {
-      form.reset();
-      toast.success(
-        "Account created! A verification email will be sent to you in moments.",
-        {
-          duration: 4000,
-          position: "top-center",
-        }
-      );
-      return { success: true };
-    }
-  } catch (error) {
-    const message = error.response?.data?.message;
+// export async function registerUser(userData, form) {
+//   try {
+//     const res = await axios.post(SIGNUP_URL, userData);
+//     if (res.data.success) {
+//       form.reset();
+//       toast.success(
+//         "Account created! A verification email will be sent to you in moments.",
+//         {
+//           duration: 4000,
+//           position: "top-center",
+//         }
+//       );
+//       return { success: true };
+//     }
+//   } catch (error) {
+//     const message = error.response?.data?.message;
 
-    if (message === "user already exist") {
-      form.setError("email", { message });
-    } else {
-      toast.error("An unexpected error occurred. Please try again later.", {
-        duration: 4000,
-        position: "top-center",
-      });
-    }
-    return { success: false };
-  }
+//     if (message === "user already exist") {
+//       form.setError("email", { message });
+//     } else {
+//       toast.error("An unexpected error occurred. Please try again later.", {
+//         duration: 4000,
+//         position: "top-center",
+//       });
+//     }
+//     return { success: false };
+//   }
+// }
+export async function registerUser(data) {
+  const res = await axios.post(SIGNUP_URL, data);
+  if (!res.data.success) throw new Error(res.data.message);
+
+  return res.data;
 }
 
 // handles password reset with OTP, sets form errors, and shows toast on error
