@@ -22,6 +22,9 @@ const Profile = lazy(() => import("@/pages/Profile"));
 const Login = lazy(() => import("@/pages/Login"));
 const Register = lazy(() => import("@/pages/Register"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+const StartExam = lazy(() => import("@/pages/StartExam"));
+const TakeExam = lazy(() => import("@/pages/TakeExam"));
+const ExamResults = lazy(() => import("@/pages/ExamResults"));
 
 const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
 const DashExams = lazy(() => import("@/pages/dashboard/dashExams"));
