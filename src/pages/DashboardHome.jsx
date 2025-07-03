@@ -8,6 +8,10 @@ import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import { Cards, SAdminActions } from "./SuperAdmin";
 import { UserCog, Users } from "lucide-react";
 import { useAllAdmins } from "@/hooks/admin/useAllAdmins";
+import { useState, useRef } from "react";
+import { X } from "lucide-react";
+import AddExamForm from "@/features/admin/AddExamForm";
+import AddQuestionForm from "@/features/admin/AddQuestionForm";
 
 export default function DashboardHome() {
   const { data: users = [], isLoading: loadingUsers } = useAllUsers();
@@ -30,6 +34,20 @@ export default function DashboardHome() {
     questions: questions.length,
   };
 
+  const [showLessonForm, setShowLessonForm] = useState(false);
+  const [showExamForm, setShowExamForm] = useState(false);
+  const [showQuestionForm, setShowQuestionForm] = useState(false);
+
+  const modalRef = useRef();
+  const handleBackdropClick = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      setShowLessonForm(false);
+      setShowExamForm(false);
+      setShowQuestionForm(false);
+    }
+  };
+
+  const sAdmin = useIsSuperAdmin();
   // super admin shittycards data stuff idk
   const data = [
     {
@@ -44,8 +62,6 @@ export default function DashboardHome() {
     },
   ];
 
-  const sAdmin = useIsSuperAdmin();
-
   return (
     <div className="space-y-6 px-4 py-6">
       <h1 className="text-2xl font-semibold">Dashboard Overview</h1>
@@ -58,8 +74,78 @@ export default function DashboardHome() {
         <StatsCards stats={stats} />
       )}
       <div className="mt-6">
-        {sAdmin ? <SAdminActions /> : <QuickActions />}
+        {sAdmin ? (
+          <SAdminActions />
+        ) : (
+          <QuickActions
+            onAddLesson={() => setShowLessonForm(true)}
+            onAddExam={() => setShowExamForm(true)}
+            onAddQuestion={() => setShowQuestionForm(true)}
+          />
+        )}
       </div>
+      {/* Add Lesson Modal */}
+      {showLessonForm && (
+        <div
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={handleBackdropClick}
+        >
+          <div
+            ref={modalRef}
+            className="relative bg-white dark:bg-[#1f2937] rounded-xl p-6 max-w-2xl w-full shadow-lg border border-gray-300 dark:border-gray-700"
+          >
+            <button
+              onClick={() => setShowLessonForm(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-600"
+            >
+              <X />
+            </button>
+            <AddLessonForm onSuccess={() => setShowLessonForm(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* Add Exam Modal */}
+      {showExamForm && (
+        <div
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={handleBackdropClick}
+        >
+          <div
+            ref={modalRef}
+            className="relative bg-white dark:bg-[#1f2937] rounded-xl p-6 max-w-2xl w-full shadow-lg border border-gray-300 dark:border-gray-700"
+          >
+            <button
+              onClick={() => setShowExamForm(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-600"
+            >
+              <X />
+            </button>
+            <AddExamForm onSuccess={() => setShowExamForm(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* Add Question Modal */}
+      {showQuestionForm && (
+        <div
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={handleBackdropClick}
+        >
+          <div
+            ref={modalRef}
+            className="relative bg-white dark:bg-[#1f2937] rounded-xl p-6 max-w-2xl w-full shadow-lg border border-gray-300 dark:border-gray-700"
+          >
+            <button
+              onClick={() => setShowQuestionForm(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-600"
+            >
+              <X />
+            </button>
+            <AddQuestionForm onSuccess={() => setShowQuestionForm(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

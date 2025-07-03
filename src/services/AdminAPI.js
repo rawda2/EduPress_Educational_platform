@@ -42,7 +42,6 @@ export async function fetchAllUsersAPI() {
 export async function fetchCurrentUserAPI() {
   try {
     const response = await axios.get(USER_URL, getTokenHeader());
-    console.log(response);
     return { success: true, user: response.data?.data };
   } catch (error) {
     console.error("Failed to fetch current user:", error);
@@ -169,18 +168,15 @@ export async function createQuestionAPI(formData) {
 
 export async function updateQuestionAPI(id, formData) {
   try {
-    const response = await axios.put(
+    const res = await axios.put(
       UPDATE_QUESTION_URL(id),
       formData,
       getTokenHeader()
     );
-    return { success: true, question: response.data?.data };
+    return res.data;
   } catch (error) {
     console.error("Failed to update question:", error);
-    return {
-      success: false,
-      message: error.response?.data?.message || "Error updating question",
-    };
+    throw error;
   }
 }
 
