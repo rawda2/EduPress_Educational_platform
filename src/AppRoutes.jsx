@@ -1,12 +1,13 @@
 import { lazy } from "react";
+import { Toaster } from "sonner";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 
 import NotFound from "@/pages/NotFound";
+import Unauthorized from "@/pages/Unauthorized";
 import ScrollToTop from "@/components/ScrollToTop";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import SuspenseFallback from "@/components/SuspenseFallback";
-import { Toaster } from "sonner";
-import ProtectedLessonRoute from "./components/ProtectedLessonRoute";
-import PaidLesson from "./pages/PaidLesson";
+import ProtectedLessonRoute from "@/components/ProtectedLessonRoute";
 
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
@@ -15,23 +16,28 @@ const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"));
 
 const Home = lazy(() => import("@/pages/Home"));
 const About = lazy(() => import("@/pages/About"));
-const Login = lazy(() => import("@/pages/Login"));
 const Lessons = lazy(() => import("@/pages/Lessons"));
-const SingleLesson = lazy(() => import("@/pages/SingleLesson"));
 const Profile = lazy(() => import("@/pages/Profile"));
-const Register = lazy(() => import("@/pages/Register"));
-const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
-const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
-const StartExam = lazy(() => import("@/pages/StartExam"));
-const TakeExam = lazy(() => import("@/pages/TakeExam"));
-const ExamResults = lazy(() => import("@/pages/ExamResults"));
+const SingleLesson = lazy(() => import("@/pages/SingleLesson"));
 
-const DashLessons = lazy(() => import("@/pages/dashboard/dashLessons"));
+const Login = lazy(() => import("@/pages/Login"));
+const Register = lazy(() => import("@/pages/Register"));
+
+const TakeExam = lazy(() => import("@/pages/TakeExam"));
+const StartExam = lazy(() => import("@/pages/StartExam"));
+const PaidLesson = lazy(() => import("@/pages/PaidLesson"));
+const ExamResults = lazy(() => import("@/pages/ExamResults"));
+const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+
+
+const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
 const DashExams = lazy(() => import("@/pages/dashboard/dashExams"));
-const DashQuestions = lazy(() => import("@/pages/dashboard/dashQuestions"));
+const DashLessons = lazy(() => import("@/pages/dashboard/dashLessons"));
 const DashStudents = lazy(() => import("@/pages/dashboard/dashStudents"));
+const DashQuestions = lazy(() => import("@/pages/dashboard/dashQuestions"));
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"));
+
 
 export default function AppRouter() {
   return (
@@ -43,7 +49,9 @@ export default function AppRouter() {
           path="/"
           element={
             <SuspenseFallback>
-              <MainLayout />
+              <ProtectedRoute>
+                <MainLayout />
+              </ProtectedRoute>
             </SuspenseFallback>
           }
         >
@@ -91,6 +99,26 @@ export default function AppRouter() {
               </SuspenseFallback>
             }
           />
+
+          {/* Profile Layout */}
+          <Route
+            path="profile"
+            element={
+              <SuspenseFallback>
+                <ProfileLayout />
+              </SuspenseFallback>
+            }
+          >
+            <Route
+              index
+              element={
+                <SuspenseFallback>
+                  <Profile />
+                </SuspenseFallback>
+              }
+            />
+            {/* <Route path="settings" element={<div>Profile Settings</div>} /> */}
+          </Route>
         </Route>
 
         {/* Auth Layout */}
@@ -129,58 +157,14 @@ export default function AppRouter() {
           />
         </Route>
 
-        {/* Profile Layout */}
-        <Route
-          path="profile"
-          element={
-            <SuspenseFallback>
-              <ProfileLayout />
-            </SuspenseFallback>
-          }
-        >
-          <Route
-            index
-            element={
-              <SuspenseFallback>
-                <Profile />
-              </SuspenseFallback>
-            }
-          />
-          {/* <Route path="settings" element={<div>Profile Settings</div>} /> */}
-        </Route>
-
-        {/* Exam Routes */}
-        <Route
-          path="/start/:examId"
-          element={
-            <SuspenseFallback>
-              <StartExam />
-            </SuspenseFallback>
-          }
-        />
-        <Route
-          path="/exam/:examId"
-          element={
-            <SuspenseFallback>
-              <TakeExam />
-            </SuspenseFallback>
-          }
-        />
-        <Route
-          path="/exams/score/:examId"
-          element={
-            <SuspenseFallback>
-              <ExamResults />
-            </SuspenseFallback>
-          }
-        />
-
         {/* Dashboard Layout */}
         <Route
           path="/dashboard"
           element={
             <SuspenseFallback>
-              <DashboardLayout />
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
             </SuspenseFallback>
           }
         >
@@ -224,21 +208,14 @@ export default function AppRouter() {
               </SuspenseFallback>
             }
           />
-          {/* <Route path="settings" element={<DashboardSettings />} /> */}
+          {/* <Route path="settings" element={<div>Profile Settings</div>} /> */}
         </Route>
+
+        {/* Unauthorized Page */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/* 404 Page */}
         <Route path="*" element={<NotFound />} />
-
-        {/* Unauthorized Page */}
-        <Route
-          path="/unauthorized"
-          element={
-            <SuspenseFallback>
-              <Unauthorized />
-            </SuspenseFallback>
-          }
-        />
       </Routes>
       <Toaster />
     </BrowserRouter>
