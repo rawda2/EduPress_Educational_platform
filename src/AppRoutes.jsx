@@ -11,6 +11,15 @@ import Exams from "@/pages/dashboard/Exams";
 import Students from "@/pages/dashboard/Students";
 import Questions from "@/pages/dashboard/Questions";
 
+//Profile Pages
+
+const Profile = lazy(() => import("@/pages/Profile/Profile"));
+const MyCourses = lazy(() => import("@/pages/Profile/MyCourses"));
+const Teachers = lazy(() => import("@/pages/Profile/Teachers"));
+const Reviews = lazy(() => import("@/pages/Profile/Reviews"));
+
+
+
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
 const ProfileLayout = lazy(() => import("@/layouts/ProfileLayout"));
@@ -18,13 +27,11 @@ const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"));
 
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
-const Profile = lazy(() => import("@/pages/Profile"));
 const Register = lazy(() => import("@/pages/Register"));
 const DashboardHome = lazy(() => import("@/pages/DashboardHome"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 
-const Unauthorized = lazy(() => import ("@/pages/Unauthorized"))
-
+const Unauthorized = lazy(() => import("@/pages/Unauthorized"));
 
 export default function AppRouter() {
   return (
@@ -85,25 +92,52 @@ export default function AppRouter() {
           />
         </Route>
 
-        {/* Profile Layout */}
-        <Route
-          path="profile"
-          element={
-            <SuspenseFallback>
-              <ProfileLayout />
-            </SuspenseFallback>
-          }
-        >
+          {/* Profile Layout */}
           <Route
-            index
+            path="/profile"
             element={
               <SuspenseFallback>
-                <Profile />
+                <ProfileLayout />
               </SuspenseFallback>
             }
-          />
-          {/* <Route path="settings" element={<div>Profile Settings</div>} /> */}
-        </Route>
+          >
+            <Route
+              index
+              element={
+                <SuspenseFallback>
+                  <Profile />
+                </SuspenseFallback>
+              }
+            />
+           
+            
+            <Route
+              path="courses"
+              element={
+                <SuspenseFallback>
+                  <MyCourses />
+                </SuspenseFallback>
+              }
+            />
+            <Route
+              path="teachers"
+              element={
+                <SuspenseFallback>
+                  <Teachers />
+                </SuspenseFallback>
+              }
+            />
+               <Route
+              path="reviews"
+              element={
+                <SuspenseFallback>
+                  <Reviews />
+                </SuspenseFallback>
+              }
+            />
+          </Route>
+          
+
 
         {/* Dashboard Layout */}
         <Route
@@ -114,46 +148,46 @@ export default function AppRouter() {
             </SuspenseFallback>
           }
         >
-                <Route
-                  index
-                  element={
-                    <SuspenseFallback>
-                      <DashboardHome />
-                    </SuspenseFallback>
-                  }
-                />
-                <Route
-          path="lessons"
-          element={
-            <SuspenseFallback>
-              <Lessons />
-            </SuspenseFallback>
-          }
-        />
-        <Route
-          path="exams"
-          element={
-            <SuspenseFallback>
-              <Exams />
-            </SuspenseFallback>
-          }
-        />
-        <Route
-          path="students"
-          element={
-            <SuspenseFallback>
-              <Students />
-            </SuspenseFallback>
-          }
-        />
-         <Route
-          path="questions"
-          element={
-            <SuspenseFallback>
-              <Questions />
-            </SuspenseFallback>
-          }
-        />
+          <Route
+            index
+            element={
+              <SuspenseFallback>
+                <DashboardHome />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="lessons"
+            element={
+              <SuspenseFallback>
+                <Lessons />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="exams"
+            element={
+              <SuspenseFallback>
+                <Exams />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="students"
+            element={
+              <SuspenseFallback>
+                <Students />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="questions"
+            element={
+              <SuspenseFallback>
+                <Questions />
+              </SuspenseFallback>
+            }
+          />
           {/* <Route path="settings" element={<DashboardSettings />} /> */}
         </Route>
 
