@@ -63,7 +63,7 @@ export const SAdminActions = () => {
       {/* modal */}
       <div
         onClick={() => setModal((prev) => !prev)}
-        className={`absolute z-50 w-full h-dvh cursor-pointer flex items-center justify-center left-0 top-0 bg-black/80 transition-all duration-300 ${
+        className={`absolute z-50 w-full h-dvh cursor-pointer flex items-center justify-center left-0 top-0 bg-black/50 transition-all duration-300 backdrop-blur-sm ${
           modal ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
@@ -71,7 +71,7 @@ export const SAdminActions = () => {
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             onClick={(e) => e.stopPropagation()}
-            className="w-[90%] flex flex-col gap-6 [&_label]:font-bold [&_label]:text-lg"
+            className="md:w-[75%] px-4 flex flex-col gap-6 [&_label]:font-bold [&_label]:text-lg"
           >
             <RegisterFormInputs
               {...{
