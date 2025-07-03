@@ -1,26 +1,27 @@
-// src/pages/Unauthorized.jsx
-import React from "react";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 import { AlertTriangle } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 export default function Unauthorized() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-background text-foreground transition-colors">
-      <div className="max-w-md w-full bg-muted/40 dark:bg-muted/20 rounded-xl shadow-md p-8 text-center border border-border">
-        <div className="flex justify-center mb-4 text-destructive">
-          <AlertTriangle className="w-12 h-12" />
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md p-8 sm:p-10 text-center space-y-6">
+        <div className="flex justify-center">
+          <AlertTriangle className="size-20 stroke-1 text-destructive" />
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-destructive mb-3">
+
+        <h1 className="text-2xl md:text-3xl font-bold text-destructive">
           Access Denied
         </h1>
-        <p className="text-muted-foreground mb-6 text-base">
-          You are not authorized to access this page. Please log in with the correct account.
+
+        <p className="text-base text-muted-foreground leading-relaxed">
+          You do not have permission to view this page. Please log in with an
+          authorized account or return to the homepage.
         </p>
-        <Button
-          className="w-full"
-          onClick={() => (window.location.href = "/auth")}
-        >
-          Back to Login
+
+        <Button asChild className="w-full">
+          <Link to="/">← Back to Home</Link>
         </Button>
       </div>
     </div>
