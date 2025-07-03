@@ -14,19 +14,14 @@ import { useExams } from "@/hooks/admin/exams/useExams";
 import AddQuestionForm from "@/features/admin/AddQuestionForm";
 import UpdateQuestionForm from "@/features/admin/UpdateQuestionForm";
 import ViewQuestionDetails from "@/features/admin/ViewQuestionDetails";
-import { useDeleteQuestion } from "@/hooks/admin/questions/UseDeleteQuestion";
-import ConfirmDialog from "@/features/admin/ConfirmDialog";
 
 export default function DashQuestions() {
   const { data, isLoading, isError } = useQuestions();
   const { data: exams } = useExams();
-  const { mutate: deleteQuestion } = useDeleteQuestion();
 
   const [showForm, setShowForm] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState(null);
   const [viewingQuestion, setViewingQuestion] = useState(null);
-  const [deletingId, setDeletingId] = useState(null);
-
   const [selectedExam, setSelectedExam] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
 
@@ -56,7 +51,12 @@ export default function DashQuestions() {
 
   const handleShow = (q) => setViewingQuestion(q);
   const handleEdit = (q) => setEditingQuestion(q);
-  const handleDelete = (id) => setDeletingId(id);
+  const handleDelete = (id) => console.log("Delete question:", id);
+
+  const handleQuestionSubmit = (formData) => {
+    console.log("Submitted Question:", formData);
+    setShowForm(false);
+  };
 
   const handleBackdropClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -144,7 +144,7 @@ export default function DashQuestions() {
             >
               <X />
             </button>
-            <AddQuestionForm exams={exams || []} onSuccess={() => setShowForm(false)} />
+            <AddQuestionForm exams={exams || []} onSubmit={handleQuestionSubmit} />
           </div>
         </div>
       )}
@@ -168,7 +168,10 @@ export default function DashQuestions() {
             <UpdateQuestionForm
               question={editingQuestion}
               onCancel={() => setEditingQuestion(null)}
-              onSuccess={() => setEditingQuestion(null)}
+              onSuccess={(updated) => {
+                setEditingQuestion(null);
+                console.log("Updated:", updated);
+              }}
             />
           </div>
         </div>
@@ -193,20 +196,6 @@ export default function DashQuestions() {
             <ViewQuestionDetails question={viewingQuestion} />
           </div>
         </div>
-      )}
-
-      {/* Confirm Delete Modal */}
-      {deletingId && (
-        <ConfirmDialog
-          title="Delete Question"
-          message="Are you sure you want to delete this question? This action cannot be undone."
-          onCancel={() => setDeletingId(null)}
-          onConfirm={() => {
-            deleteQuestion(deletingId, {
-              onSuccess: () => setDeletingId(null),
-            });
-          }}
-        />
       )}
     </div>
   );

@@ -1,22 +1,19 @@
+// hooks/admin/questions/useUpdateQuestion.js
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateQuestionAPI } from "@/services/AdminAPI";
 import { toast } from "sonner";
 
-export const useUpdateQuestion = ({ onSuccess } = {}) => {
+export const useUpdateQuestion = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ questionId, data }) => updateQuestionAPI(questionId, data),
-    onSuccess: (response) => {
-      console.log("✅ Question updated:", response);
-      toast.success("Question updated successfully ✅");
-      queryClient.invalidateQueries(["questions"]);
-      onSuccess?.(response); 
+    mutationFn: ({ questionId, data }) => updateQuestionAPI({ questionId, data }),
+    onSuccess: () => {
+      toast.success("Question updated successfully");
+      queryClient.invalidateQueries(["exams"]);
     },
-    onError: (error) => {
-      const msg = error?.response?.data?.message || "Failed to update question ❌";
-      console.error("❌ Question update error:", error?.response?.data || error);
-      toast.error(msg);
+    onError: () => {
+      toast.error("Failed to update question");
     },
   });
 };
