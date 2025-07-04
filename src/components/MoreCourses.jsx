@@ -32,10 +32,10 @@ const MoreCourses = ({ id }) => {
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
                 <div className="p-1">
                   <Card
-                    className="p-2 cursor-pointer hover:scale-105 transition-all duration-300"
+                    className="p-2 cursor-pointer hover:scale-105 transition-all duration-300 "
                     onClick={() => navigate(`/lessons/${lesson._id}`)}
                   >
-                    <CardContent className="flex flex-col items-start justify-start p-2 gap-2 h-full">
+                    <CardContent className="flex flex-col items-start justify-start p-2 gap-2 min-h-full">
                       <div className="rouded-lg ">
                         <img src={image} alt="image" />
                       </div>
@@ -51,7 +51,7 @@ const MoreCourses = ({ id }) => {
                         {lesson?.scheduledDate?.slice(0, 10)}
                       </div>
                       <p className="text-white/80">
-                        {lesson?.description?.slice(0, 50)}...
+                        {lesson?.description?.slice(0, 40)}...
                       </p>
                       <h1 className="text-2xl font-bold">${lesson.price}</h1>
                     </CardContent>

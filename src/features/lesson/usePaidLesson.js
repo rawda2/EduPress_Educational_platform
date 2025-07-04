@@ -5,5 +5,6 @@ export const usePaidLesson = (id) => {
   return useQuery({
     queryKey: ["paidLesson", id],
     queryFn: () => getLessonById(id),
+    retry: false,
   });
 };
