@@ -1,3 +1,4 @@
+import LoadingButton from "@/components/LoadingButton";
 import SubmitBtn from "@/components/SubmitBtn";
 import {
   FormControl,
@@ -139,9 +140,9 @@ export function RegisterFormInputs({
           already have an account? login
         </Link>
       )}
-      <SubmitBtn disabled={form.formState.isSubmitting}>
-        <h1>Sign Up</h1>
-      </SubmitBtn>
+      <LoadingButton type="submit" loading={form.formState.isSubmitting}>
+        Sign up
+      </LoadingButton>
     </>
   );
 }

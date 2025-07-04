@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import profileImg from "./../../assets/Ellipse 53.png";
