@@ -4,6 +4,7 @@ const ALL_ADMIN_URL = `${BASE_URL}/admin/all-admin`;
 const USER_URL = `${BASE_URL}/user`;
 const ALL_USERS_URL = `${BASE_URL}/admin/all-user`;
 
+
 const AUTH_URL = `${BASE_URL}/auth`;
 const LOGIN_URL = `${AUTH_URL}/login`;
 const SIGNUP_URL = `${AUTH_URL}/signup`;
@@ -27,3 +28,4 @@ export {
   ALL_EXAMS_URL,
   ALL_QUESTIONS_URL,
 };
+

@@ -1,6 +1,6 @@
 // src/services/AdminAPI.js
 import axios from "axios";
-import { ALL_ADMIN_URL, ALL_EXAMS_URL, ALL_LESSONS_URL, ALL_QUESTIONS_URL, ALL_USERS_URL, USER_URL } from "./api";
+import { ALL_ADMIN_URL, ALL_EXAMS_URL, ALL_LESSONS_URL, ALL_QUESTIONS_URL, ALL_USERS_URL, USER_URL, BASE_URL } from "./api";
 
 const getTokenHeader = () => {
   const token = localStorage.getItem("token");
