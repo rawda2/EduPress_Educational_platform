@@ -51,7 +51,7 @@ const reviews = [
 
 export default function ReviewsSection() {
   return (
-    <div className="px-4 sm:px-6 md:px-10 py-6 max-w-5xl mx-auto">
+    <div className="px-4 sm:px-6 md:px-10 py-6 max-w-5xl mx-auto  text-black dark:bg-black dark:text-white">
       <h2 className="text-xl font-semibold mb-6">
         Reviews <span className="text-gray-500">(12)</span>
       </h2>

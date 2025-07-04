@@ -20,8 +20,7 @@ export default function MyCourses() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhd2RhMzIwMDRAZ21haWwuY29tIiwiX2lkIjoiNjg1ZTkyMDdjYzU0YWE0ZDIxMDgxZmQ2IiwiaWF0IjoxNzUxNTM5Njc0LCJleHAiOjE3NTE2MjYwNzR9.vu1s1Mgk1BMjWo528wbVXZgOV19-sDu4Ohm9hGlLTeM";
+  const token =localStorage.getItem("token")
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -58,7 +57,7 @@ export default function MyCourses() {
   }
 
   return (
-    <div className="px-4 sm:px-6 md:px-10 py-6 space-y-6">
+    <div className="px-4 sm:px-6 md:px-10 py-6 space-y-6  text-black dark:bg-black dark:text-white m-0 w-full">
       {/* Navigation Bar */}
       <div className="flex flex-col gap-4">
         <h1 className="text-lg font-semibold">
