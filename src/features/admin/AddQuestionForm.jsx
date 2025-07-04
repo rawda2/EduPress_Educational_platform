@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { questionSchema } from "@/validations/QuestionSchema";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,156 +15,186 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-export default function AddQuestionForm({ exams = [], onSubmit }) {
-  const [formData, setFormData] = useState({
-    text: "",
-    type: "",
-    options: [],
-    correctAnswer: "",
-    exam: "",
-    points: "",
+import { useAddQuestion } from "@/hooks/admin/questions/useAddQuestion";
+
+export default function AddQuestionForm({ exams = [], onSuccess }) {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(questionSchema),
+    defaultValues: {
+      text: "",
+      type: "",
+      options: ["", "", "", ""],
+      correctAnswer: "",
+      exam: "",
+      points: "",
+    },
   });
 
-  const [optionInputs, setOptionInputs] = useState(["", "", "", ""]);
+  const watchType = watch("type");
+  const { mutate: addQuestion, isPending } = useAddQuestion();
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  // ✅ تحديث الخيارات تلقائيًا عند تغيير النوع
+  useEffect(() => {
+    if (watchType === "true-false") {
+      setValue("options", ["True", "False"]);
+    } else if (watchType === "short-answer") {
+      setValue("options", []); // or undefined if your schema allows it
+    } else {
+      setValue("options", ["", "", "", ""]);
+    }
+  }, [watchType, setValue]);
 
   const handleOptionChange = (index, value) => {
-    const updated = [...optionInputs];
+    const current = watch("options") || [];
+    const updated = [...current];
     updated[index] = value;
-    setOptionInputs(updated);
-    setFormData((prev) => ({ ...prev, options: updated }));
+    setValue("options", updated);
   };
+const onSubmitForm = (data) => {
+  if (data.type === "true-false") {
+    data.options = ["True", "False"];
+  } else if (data.type === "short-answer") {
+    delete data.options; // نحذفها نهائيًا
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const payload = {
-      ...formData,
-      options:
-        formData.type === "multiple-choice"
-          ? optionInputs
-          : formData.type === "true-false"
-          ? ["True", "False"]
-          : [],
-    };
-    onSubmit(payload);
+  console.log("✅ Submitting question:", data);
+
+  addQuestion(data, {
+    onSuccess: () => {
+      reset();
+      onSuccess?.();
+    },
+  });
+};
+
+
+  const onSubmitError = (errors) => {
+    console.log("❌ Validation Errors:", errors);
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmitForm, onSubmitError)}
       className="space-y-6 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-gray-100 p-6 rounded-xl shadow-md border border-border dark:border-gray-700 max-w-2xl mx-auto"
     >
       <h2 className="text-xl font-semibold mb-4">Add New Question</h2>
 
+      {/* Question Text */}
       <div className="space-y-2">
         <Label>Question Text</Label>
-        <Textarea
-          value={formData.text}
-          onChange={(e) => handleChange("text", e.target.value)}
-          placeholder="Enter the question"
-          required
-        />
+        <Textarea {...register("text")} placeholder="Enter the question" />
+        {errors.text && <p className="text-red-500 text-sm">{errors.text.message}</p>}
       </div>
 
+      {/* Type */}
       <div className="space-y-2">
         <Label>Type</Label>
-        <Select onValueChange={(val) => handleChange("type", val)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select question type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
-            <SelectItem value="true-false">True / False</SelectItem>
-            <SelectItem value="short-answer">Short Answer</SelectItem>
-          </SelectContent>
-        </Select>
+        <Controller
+          control={control}
+          name="type"
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select question type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
+                <SelectItem value="true-false">True / False</SelectItem>
+                <SelectItem value="short-answer">Short Answer</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.type && <p className="text-red-500 text-sm">{errors.type.message}</p>}
       </div>
 
-      {formData.type === "multiple-choice" && (
+      {/* Options */}
+      {watchType === "multiple-choice" && (
         <div className="space-y-2">
           <Label>Options</Label>
-          {optionInputs.map((opt, idx) => (
+          {[0, 1, 2, 3].map((idx) => (
             <Input
               key={idx}
               placeholder={`Option ${idx + 1}`}
-              value={opt}
+              value={watch("options")[idx] || ""}
               onChange={(e) => handleOptionChange(idx, e.target.value)}
-              required
             />
           ))}
+          {errors.options && <p className="text-red-500 text-sm">{errors.options.message}</p>}
         </div>
       )}
 
-      {formData.type === "true-false" && (
-        <div className="space-y-2">
-          <Label>Correct Answer</Label>
-          <Select onValueChange={(val) => handleChange("correctAnswer", val)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select correct answer" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="True">True</SelectItem>
-              <SelectItem value="False">False</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      )}
-
-      {formData.type === "short-answer" && (
-        <div className="space-y-2">
-          <Label>Correct Answer</Label>
+      {/* Correct Answer */}
+      <div className="space-y-2">
+        <Label>Correct Answer</Label>
+        {watchType === "true-false" ? (
+          <Controller
+            control={control}
+            name="correctAnswer"
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select correct answer" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="True">True</SelectItem>
+                  <SelectItem value="False">False</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        ) : (
           <Textarea
-            value={formData.correctAnswer}
-            onChange={(e) => handleChange("correctAnswer", e.target.value)}
-            placeholder="Enter expected answer"
+            {...register("correctAnswer")}
+            placeholder="Write the correct answer"
           />
-        </div>
-      )}
+        )}
+        {errors.correctAnswer && (
+          <p className="text-red-500 text-sm">{errors.correctAnswer.message}</p>
+        )}
+      </div>
 
-      {formData.type === "multiple-choice" && (
-        <div className="space-y-2">
-          <Label>Correct Answer</Label>
-          <Input
-            value={formData.correctAnswer}
-            onChange={(e) => handleChange("correctAnswer", e.target.value)}
-            placeholder="Exact correct option"
-            required
-          />
-        </div>
-      )}
-
+      {/* Exam */}
       <div className="space-y-2">
         <Label>Exam</Label>
-        <Select onValueChange={(val) => handleChange("exam", val)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select exam" />
-          </SelectTrigger>
-          <SelectContent>
-            {exams.map((exam) => (
-              <SelectItem key={exam._id} value={exam._id}>
-                {exam.title}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Controller
+          control={control}
+          name="exam"
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select exam" />
+              </SelectTrigger>
+              <SelectContent>
+                {exams.map((exam) => (
+                  <SelectItem key={exam._id} value={exam._id}>
+                    {exam.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.exam && <p className="text-red-500 text-sm">{errors.exam.message}</p>}
       </div>
 
+      {/* Points */}
       <div className="space-y-2">
         <Label>Points</Label>
-        <Input
-          type="number"
-          value={formData.points}
-          onChange={(e) => handleChange("points", e.target.value)}
-          placeholder="e.g. 2"
-          required
-        />
+        <Input type="number" {...register("points")} placeholder="e.g. 2" />
+        {errors.points && <p className="text-red-500 text-sm">{errors.points.message}</p>}
       </div>
 
-      <Button type="submit" className="w-full">
-        Submit Question
+      <Button type="submit" className="w-full" disabled={isPending}>
+        {isPending ? "Submitting..." : "Submit Question"}
       </Button>
     </form>
   );

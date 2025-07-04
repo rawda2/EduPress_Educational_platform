@@ -7,12 +7,7 @@ import Unauthorized from "@/pages/Unauthorized";
 import ScrollToTop from "@/components/ScrollToTop";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import SuspenseFallback from "@/components/SuspenseFallback";
-import ProtectedLessonRoute from "@/components/ProtectedLessonRoute";
 
-const Profile = lazy(() => import("@/pages/Profile/Profile"));
-const MyCourses = lazy(() => import("@/pages/Profile/MyCourses"));
-const Teachers = lazy(() => import("@/pages/Profile/Teachers"));
-const Reviews = lazy(() => import("@/pages/Profile/Reviews"));
 
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
@@ -37,6 +32,12 @@ const DashExams = lazy(() => import("@/pages/dashboard/dashExams"));
 const DashLessons = lazy(() => import("@/pages/dashboard/dashLessons"));
 const DashStudents = lazy(() => import("@/pages/dashboard/dashStudents"));
 const DashQuestions = lazy(() => import("@/pages/dashboard/dashQuestions"));
+
+
+
+
+const Unauthorized = lazy(() => import("@/pages/Unauthorized"));
+
 
 export default function AppRouter() {
   return (
@@ -191,47 +192,56 @@ export default function AppRouter() {
             </SuspenseFallback>
           }
         >
+                <Route
+                  index
+                  element={
+                    <SuspenseFallback>
+                      <DashboardHome />
+                    </SuspenseFallback>
+                  }
+                />
+                <Route
+          path="lessons"
+          element={
+            <SuspenseFallback>
+              <DashLessons />
+            </SuspenseFallback>
+          }
+        />
+        <Route
+          path="exams"
+          element={
+            <SuspenseFallback>
+              <DashExams />
+            </SuspenseFallback>
+          }
+        />
+        <Route
+          path="students"
+          element={
+            <SuspenseFallback>
+              <DashStudents user="user"/>
+            </SuspenseFallback>
+          }
+        />
+         <Route
+          path="questions"
+          element={
+            <SuspenseFallback>
+              <DashQuestions />
+            </SuspenseFallback>
+          }
+        />
+        {/* for s_admin only */}
           <Route
-            index
+            path="admins"
             element={
               <SuspenseFallback>
-                <DashboardHome />
+                <DashStudents user="admin" />
               </SuspenseFallback>
             }
           />
-          <Route
-            path="lessons"
-            element={
-              <SuspenseFallback>
-                <DashLessons />
-              </SuspenseFallback>
-            }
-          />
-          <Route
-            path="exams"
-            element={
-              <SuspenseFallback>
-                <DashExams />
-              </SuspenseFallback>
-            }
-          />
-          <Route
-            path="students"
-            element={
-              <SuspenseFallback>
-                <DashStudents />
-              </SuspenseFallback>
-            }
-          />
-          <Route
-            path="questions"
-            element={
-              <SuspenseFallback>
-                <DashQuestions />
-              </SuspenseFallback>
-            }
-          />
-          {/* <Route path="settings" element={<div>Profile Settings</div>} /> */}
+          {/* <Route path="settings" element={<DashboardSettings />} /> */}
         </Route>
 
         {/* Unauthorized Page */}

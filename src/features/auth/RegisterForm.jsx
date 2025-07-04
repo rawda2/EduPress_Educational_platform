@@ -1,175 +1,150 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Eye, EyeOff } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-
+import SubmitBtn from "@/components/SubmitBtn";
 import {
-  Form,
+  FormControl,
+  FormField,
   FormItem,
   FormLabel,
-  FormField,
   FormMessage,
-  FormControl,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
-  SelectItem,
-  SelectValue,
-  SelectTrigger,
   SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import LoadingButton from "@/components/LoadingButton";
+import { Eye, EyeOff } from "lucide-react";
+import { Link } from "react-router";
 
-import { RegisterSchema } from "@/validations/RegisterSchema";
-import useRegister from "./useRegister";
-
-export default function RegisterForm() {
-  const form = useForm({
-    resolver: zodResolver(RegisterSchema),
-    defaultValues,
-  });
-
-  const [showPassword, setShowPassword] = useState(false);
-
-  const { isLoading, register } = useRegister();
-
-  const onSubmit = async (data) => {
-    const { fn, ln, ...rest } = data;
-    const userData = {
-      ...rest,
-      fullName: `${fn} ${ln}`,
-    };
-
-    register(userData, {
-      onSuccess: () => form.reset(),
-    });
-  };
-
+export function RegisterFormInputs({
+  form,
+  showPassword,
+  setShowPassword,
+  admin,
+}) {
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-lg mx-auto flex flex-col w-full gap-4 [&_label]:font-bold [&_label]:text-base [&_label]:capitalize"
-      >
-        {inputFields.map((field, i) => {
-          if (Array.isArray(field)) {
-            return (
-              <div key={i} className="flex flex-col sm:flex-row w-full gap-4">
-                {field.map((subField, j) => (
-                  <FormField
-                    key={j}
-                    control={form.control}
-                    name={subField.name}
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col w-full">
-                        <FormLabel htmlFor={subField.name}>
-                          {subField.label}
-                        </FormLabel>
-                        <div className="relative">
-                          <FormControl>
-                            <Input
-                              id={subField.name}
-                              placeholder={subField.placeholder}
-                              type={
-                                subField.type === "password" && showPassword
-                                  ? "text"
-                                  : subField.type
-                              }
-                              {...field}
-                            />
-                          </FormControl>
-                          {subField.type === "password" && (
-                            <Button
-                              size="icon"
-                              type="button"
-                              variant="ghost"
-                              className="absolute right-0 top-1/2 -translate-y-1/2 !bg-transparent"
-                              onClick={() => setShowPassword((prev) => !prev)}
-                            >
-                              {showPassword ? <Eye /> : <EyeOff />}
-                            </Button>
-                          )}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-              </div>
-            );
-          }
-
+    <>
+      {inputFields.map((field, i) => {
+        if (Array.isArray(field)) {
           return (
-            <div key={i}>
-              {field.type === "select" ? (
+            <div key={i} className="flex w-full gap-8">
+              {field.map((subField, j) => (
+                <FormField
+                  key={j}
+                  control={form.control}
+                  name={subField.name}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel htmlFor={subField.name}>
+                        {subField.label}
+                      </FormLabel>
+                      <div className="relative">
+                        <FormControl>
+                          <Input
+                            className="auth-input"
+                            id={subField.name}
+                            type={
+                              subField.type === "password" && showPassword
+                                ? "text"
+                                : subField.type
+                            }
+                            placeholder={subField.placeholder}
+                            {...field}
+                          />
+                        </FormControl>
+                        {subField.type === "password" && (
+                          <button
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            type="button"
+                            className="input-icon"
+                          >
+                            {showPassword ? <Eye /> : <EyeOff />}
+                          </button>
+                        )}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
+          );
+        }
+
+        return (
+          <div key={i}>
+            {field.type === "select" ? (
+              !admin && (
                 <FormField
                   control={form.control}
                   name={field.name}
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel htmlFor={field.name}>{field.label}</FormLabel>
-                      <Select
-                        id={field.name}
-                        defaultValue={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full cursor-pointer">
-                            <SelectValue placeholder="Select Your Class Level" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {classLevels.map((val) => (
-                            <SelectItem key={val} value={val}>
-                              {val}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ) : (
-                <FormField
-                  control={form.control}
-                  name={field.name}
-                  render={({ field: inputProps }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel htmlFor={field.name}>{field.label}</FormLabel>
                       <FormControl>
-                        <Input
-                          className="auth-input"
-                          id={field.name}
-                          type={field.type}
-                          placeholder={field.placeholder}
-                          {...inputProps}
-                        />
+                        <Select id={field.name} {...field}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Class Level" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Select Class Level</SelectLabel>
+                              <SelectItem value="Grade 1 Secondary">
+                                Grade 1 Secondary
+                              </SelectItem>
+                              <SelectItem value="Grade 2 Secondary">
+                                Grade 2 Secondary
+                              </SelectItem>
+                              <SelectItem value="Grade 3 Secondary">
+                                Grade 3 Secondary
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
-            </div>
-          );
-        })}
-
-        <LoadingButton loading={form.formState.isSubmitting || isLoading}>
-          Sign Up
-        </LoadingButton>
-      </form>
-    </Form>
+              )
+            ) : (
+              <FormField
+                control={form.control}
+                name={field.name}
+                render={({ field: inputProps }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel htmlFor={field.name}>{field.label}</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="auth-input"
+                        id={field.name}
+                        type={field.type}
+                        placeholder={field.placeholder}
+                        {...inputProps}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+          </div>
+        );
+      })}
+      {!admin && (
+        <Link to="/auth" className="!mt-0 w-fit underline">
+          already have an account? login
+        </Link>
+      )}
+      <SubmitBtn disabled={form.formState.isSubmitting}>
+        <h1>Sign Up</h1>
+      </SubmitBtn>
+    </>
   );
 }
-
-const classLevels = [
-  "Grade 1 Secondary",
-  "Grade 2 Secondary",
-  "Grade 3 Secondary",
-];
 
 const inputFields = [
   [
@@ -219,13 +194,3 @@ const inputFields = [
     name: "classLevel",
   },
 ];
-
-const defaultValues = {
-  fn: "",
-  ln: "",
-  email: "",
-  password: "",
-  cpassword: "",
-  phoneNumber: "",
-  classLevel: "",
-};
