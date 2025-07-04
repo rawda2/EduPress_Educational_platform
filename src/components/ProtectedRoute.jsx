@@ -1,15 +1,26 @@
-// import { Navigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
+
+import LoaderFullScreen from "./LoaderFullScreen";
+
+import useUser from "@/features/auth/useUser";
+
+import { axiosErrorHandler } from "@/lib/utils";
 
 export default function ProtectedRoute({ children }) {
-  // if (isLoading) return (
-  //   <div className="flex justify-center items-center min-h-screen">
-  //     <Loader2 className="animate-spin size-6" />
-  //   </div>
-  // );
+  const { pathname } = useLocation();
+  const { isLoading, data: user, error } = useUser();
 
-  // if (error) return <Navigate to="/" replace />;
+  if (isLoading) return <LoaderFullScreen />;
 
-  // if (!user) return <Navigate to="/signin" replace />;
+  if (error)
+    return (
+      <div>{axiosErrorHandler(error, "An unexpected error occurred.")}</div>
+    );
+
+  if (!user) return <Navigate to="/auth" replace />;
+
+  if (user.role !== "admin" && pathname.includes("/dashboard"))
+    return <Navigate to="/unauthorized" replace />;
 
   return children;
 }
