@@ -72,7 +72,7 @@ export default function Teachers() {
   );
 
   return (
-    <div className="px-4 sm:px-6 md:px-10 py-6 space-y-8 max-w-[1440px] mx-auto">
+    <div className="px-4 sm:px-6 md:px-10 py-6 space-y-8 max-w-[1440px] mx-auto  text-black dark:bg-black dark:text-white">
       {/* Header + Filter Section */}
       <div className="flex flex-col gap-6">
         <h1 className="text-xl sm:text-2xl font-semibold">
@@ -107,11 +107,11 @@ export default function Teachers() {
       </div>
 
       {/* Teacher Cards Grid */}
-      <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6  text-black dark:bg-black dark:text-white">
         {filteredTeachers.map((teacher) => (
           <div
             key={teacher.id}
-            className="bg-white rounded-xl shadow-sm hover:shadow-lg transition text-center p-6 flex flex-col items-center"
+            className="bg-white  text-black dark:bg-black dark:text-white rounded-xl shadow-sm hover:shadow-lg transition text-center p-6 flex flex-col items-center"
           >
             <img
               src={teacher.image}
