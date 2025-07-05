@@ -12,6 +12,7 @@ import { useState, useRef } from "react";
 import { X } from "lucide-react";
 import AddExamForm from "@/features/admin/AddExamForm";
 import AddQuestionForm from "@/features/admin/AddQuestionForm";
+import ExamScoresTable from "@/features/admin/ExamScoresTable";
 
 export default function DashboardHome() {
   const { data: users = [], isLoading: loadingUsers } = useAllUsers();
@@ -73,6 +74,9 @@ export default function DashboardHome() {
       ) : (
         <StatsCards stats={stats} />
       )}
+
+      {/* ✅ Display Exam Scores Table */}
+      {exams.length > 0 && <ExamScoresTable exams={exams} />}
       <div className="mt-6">
         {sAdmin ? (
           <SAdminActions />

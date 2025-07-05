@@ -14,6 +14,7 @@ import {
   ALL_LESSONS_URL,
   ALL_USERS_URL,
   USER_URL,
+  GET_ALL_STUDENTS_SCORES_URL,
 } from "./api";
 
 export const getTokenHeader = () => {
@@ -53,16 +54,44 @@ export async function fetchCurrentUserAPI() {
 }
 
 // ========== Lessons ==========
-export async function fetchLessonsAPI() {
+export async function fetchLessonsAPI(filters = {}) {
+  const params = new URLSearchParams();
+
+  if (filters.classLevel) params.append("classLevel", filters.classLevel);
+  if (filters.isPaid !== undefined) params.append("isPaid", filters.isPaid);
+  if (filters.title) params.append("title", filters.title);
+  if (filters.sortBy) params.append("sortBy", filters.sortBy);
+  if (filters.sortOrder) params.append("sortOrder", filters.sortOrder);
+
+  const url = `${ALL_LESSONS_URL}?${params.toString()}`;
+
   try {
-    const response = await axios.get(ALL_LESSONS_URL, getTokenHeader());
-    return { success: true, lessons: response.data?.data || [] };
+    const response = await axios.get(url, getTokenHeader());
+    return response.data;  // ✨ هنا رجعنا الـ data مباشرة
   } catch (error) {
     console.error("Failed to fetch lessons:", error);
-    return {
-      success: false,
-      message: error.response?.data?.message || "Error fetching lessons",
-    };
+    throw new Error(error.response?.data?.message || "Error fetching lessons");
+  }
+}
+
+
+export async function fetchLessonByIdAPI(id) {
+  try {
+    const response = await axios.get(`${ALL_LESSONS_URL}/${id}`, getTokenHeader());
+    return { success: true, lesson: response.data?.data };
+  } catch (error) {
+    console.error("Failed to fetch lesson by ID:", error);
+    return { success: false, message: "Error fetching lesson" };
+  }
+}
+
+export async function deleteLessonAPI(id) {
+  try {
+    await axios.delete(`${ALL_LESSONS_URL}/${id}`, getTokenHeader());
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete lesson:", error);
+    return { success: false, message: "Error deleting lesson" };
   }
 }
 
@@ -131,6 +160,22 @@ export async function fetchExamByIdAPI(id) {
     };
   }
 }
+
+export async function fetchExamScoresAPI(examId, studentName = "") {
+  try {
+    const query = studentName ? `?studentName=${studentName}` : "";
+    const response = await axios.get(GET_ALL_STUDENTS_SCORES_URL(examId) + query, getTokenHeader());
+    return { success: true, scores: response.data?.data || [] };
+  } catch (error) {
+    console.error("Failed to fetch exam scores:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Error fetching exam scores",
+    };
+  }
+}
+
+
 
 // ========== Questions ==========
 export async function fetchQuestionsAPI() {

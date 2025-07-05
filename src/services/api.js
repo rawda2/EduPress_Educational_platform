@@ -21,6 +21,10 @@ const UPDATE_EXAM_URL = (id) => `${BASE_URL}/exam/${id}`; // PUT
 const DELETE_EXAM_URL = (id) => `${BASE_URL}/exam/${id}`; // DELETE
 const GET_SINGLE_EXAM_URL = (id) => `${BASE_URL}/exam/${id}`; // GET
 
+// Student Exams (Scores)
+const GET_ALL_STUDENTS_SCORES_URL = (examId) => `${BASE_URL}/studentExam/exams/${examId}`;
+
+
 // Questions
 const ALL_QUESTIONS_URL = `${BASE_URL}/question`;
 const CREATE_QUESTION_URL = `${BASE_URL}/question`; // POST
@@ -46,6 +50,7 @@ export {
   UPDATE_EXAM_URL,
   DELETE_EXAM_URL,
   GET_SINGLE_EXAM_URL,
+  GET_ALL_STUDENTS_SCORES_URL,
 
   // Questions
   ALL_QUESTIONS_URL,

@@ -1,7 +1,8 @@
 import { LogOut } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import ThemeToggle from "@/components/dashboard/ThemeToggle";
+import ThemeToggle from "@/components/ThemeToggle"; 
 import SidebarSheet from "@/components/dashboard/SidebarSheet";
+import Logo from "@/components/Logo";
 
 import {
   DropdownMenu,
@@ -16,7 +17,7 @@ import { useCurrentUser } from "@/hooks/admin/useCurrentUser";
 
 export default function Header() {
   const { data, isLoading } = useCurrentUser();
-const user = data;
+  const user = data;
 
   const getInitials = (name) => {
     if (!name) return "AD";
@@ -33,21 +34,12 @@ const user = data;
       {/* Left: Logo + Sidebar Menu */}
       <div className="h-8 flex items-center gap-3">
         <SidebarSheet />
-        <img
-          src="src/assets/logo-light.svg"
-          alt="Logo"
-          className="block dark:hidden h-8"
-        />
-        <img
-          src="src/assets/logo-dark.svg"
-          alt="Logo"
-          className="hidden dark:block h-8"
-        />
+        <Logo />
       </div>
 
-      {/* Right: Theme + User */}
+      {/* Right: Theme Toggle + User */}
       <div className="flex items-center gap-4">
-        <ThemeToggle />
+        <ThemeToggle />  {/* هنا التوجيل */}
 
         {/* Avatar Dropdown */}
         <DropdownMenu>

@@ -3,10 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import dayjs from "dayjs";
 import AddQuestionForm from "@/features/admin/AddQuestionForm";
 import { Button } from "@/components/ui/button";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Eye } from "lucide-react";
+import { useExamScores } from "@/hooks/admin/exams/useExamScores";
 
 export default function ViewExamDetails({ exam }) {
   const [showForm, setShowForm] = useState(false);
+  const [showScores, setShowScores] = useState(false);
   const modalRef = useRef(null);
 
   const handleQuestionSubmit = (formData) => {
@@ -14,21 +16,26 @@ export default function ViewExamDetails({ exam }) {
     setShowForm(false);
   };
 
+  const { data, isLoading, isError } = useExamScores(exam._id);
+  const scores = data?.scores || [];
+
   // Close modal on outside click or ESC
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
         setShowForm(false);
+        setShowScores(false);
       }
     };
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         setShowForm(false);
+        setShowScores(false);
       }
     };
 
-    if (showForm) {
+    if (showForm || showScores) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleKeyDown);
     }
@@ -37,7 +44,7 @@ export default function ViewExamDetails({ exam }) {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [showForm]);
+  }, [showForm, showScores]);
 
   if (!exam) return <p className="text-muted-foreground">No exam data available</p>;
 
@@ -65,8 +72,16 @@ export default function ViewExamDetails({ exam }) {
         </div>
       </div>
 
-      {/* Add New Question Button */}
-      <div className="flex justify-end">
+      {/* Action Buttons */}
+      <div className="flex justify-end gap-4">
+        <Button
+          className="bg-blue-600 text-white flex items-center gap-2"
+          onClick={() => setShowScores(true)}
+        >
+          <Eye size={16} />
+          View Scores
+        </Button>
+
         <Button
           className="bg-primary text-white flex items-center gap-2"
           onClick={() => setShowForm(true)}
@@ -132,7 +147,6 @@ export default function ViewExamDetails({ exam }) {
             ref={modalRef}
             className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg border border-border w-full max-w-2xl"
           >
-            {/* Close Button */}
             <button
               onClick={() => setShowForm(false)}
               className="absolute top-4 right-4 text-gray-500 hover:text-red-500"
@@ -140,12 +154,66 @@ export default function ViewExamDetails({ exam }) {
               <X size={20} />
             </button>
 
-            {/* Add Question Form */}
             <AddQuestionForm
               exams={[{ _id: exam._id, title: exam.title }]}
               onSubmit={handleQuestionSubmit}
-              defaultExamId={exam._id} 
+              defaultExamId={exam._id}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Modal for View Scores */}
+      {showScores && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div
+            ref={modalRef}
+            className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg border border-border w-full max-w-3xl overflow-auto max-h-[90vh]"
+          >
+            <button
+              onClick={() => setShowScores(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-red-500"
+            >
+              <X size={20} />
+            </button>
+
+            <h3 className="text-lg font-semibold mb-4">Students' Scores</h3>
+
+            {isLoading ? (
+              <p>Loading scores...</p>
+            ) : isError ? (
+              <p className="text-red-500">Failed to load scores.</p>
+            ) : scores.length === 0 ? (
+              <p className="text-muted-foreground">No students have taken this exam yet.</p>
+            ) : (
+             <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
+      <thead className="bg-gray-100 dark:bg-gray-800">
+        <tr>
+          <th className="p-2 text-left">Student Name</th>
+          <th className="p-2 text-left">Score</th>
+          <th className="p-2 text-left">Submitted</th>
+          <th className="p-2 text-left">Start Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {scores.map((item) => (
+          <tr key={item._id} className="border-t border-border dark:border-gray-700">
+            <td className="p-2">{item.student?.fullName || "Unknown"}</td>
+            <td className="p-2">{item.score}</td>
+            <td className="p-2">
+              <Badge variant={item.isSubmitted ? "success" : "destructive"}>
+                {item.isSubmitted ? "Submitted" : "Not Submitted"}
+              </Badge>
+            </td>
+            <td className="p-2">
+              {dayjs(item.startTime).format("MMM D, YYYY HH:mm")}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+            )}
           </div>
         </div>
       )}
