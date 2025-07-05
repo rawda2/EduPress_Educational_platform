@@ -51,5 +51,12 @@ export const examApi = {
     const params = studentName ? { studentName } : {};
     const response = await api.get(`/studentExams/exams/${examId}`, { params });
     return response.data;
+  },
+
+  // Get all available exams for student
+  getAllExams: async () => {
+    const response = await api.get('/exam');
+    return response.data;
   }
+  
 };

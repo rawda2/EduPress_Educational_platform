@@ -23,6 +23,7 @@ const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 const StartExam = lazy(() => import("@/pages/StartExam"));
 const TakeExam = lazy(() => import("@/pages/TakeExam"));
 const ExamResults = lazy(() => import("@/pages/ExamResults"));
+const Exams = lazy(() => import("@/pages/Exams"));
 
 const DashLessons = lazy(() => import("@/pages/dashboard/dashLessons"));
 const DashExams = lazy(() => import("@/pages/dashboard/dashExams"));
@@ -153,6 +154,14 @@ export default function AppRouter() {
           element={
             <SuspenseFallback>
               <ExamResults />
+            </SuspenseFallback>
+          }
+        />
+        <Route
+          path="/exam"
+          element={
+            <SuspenseFallback>
+              <Exams />
             </SuspenseFallback>
           }
         />
