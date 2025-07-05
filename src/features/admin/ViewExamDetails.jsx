@@ -43,7 +43,7 @@ export default function ViewExamDetails({ exam }) {
     return <p className="text-muted-foreground">No exam data available</p>;
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto p-6">
+    <div className="space-y-6 max-w-4xl mx-auto">
       {/* Exam Info */}
       <div className="bg-white dark:bg-[#1f2937] rounded-xl p-6 shadow-md border border-border dark:border-gray-700">
         <h2 className="text-2xl font-bold mb-2">{exam.title}</h2>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { examSchema } from "@/validations/ExamSchema";
@@ -17,8 +17,12 @@ import { Switch } from "@/components/ui/switch";
 import { Plus, X } from "lucide-react";
 import AddQuestionForm from "@/features/admin/questions/AddQuestionForm";
 import UpdateQuestionForm from "@/features/admin/UpdateQuestionForm";
+import LoadingButton from "@/components/LoadingButton";
+// import useExam from "./exams/useExam";
 
-export default function UpdateExamForm({ exam, onSubmit }) {
+export default function UpdateExamForm({ exam }) {
+  // const { isLoadingExam, exam, error } = useExam(examId);
+
   const {
     register,
     handleSubmit,
@@ -38,9 +42,7 @@ export default function UpdateExamForm({ exam, onSubmit }) {
     },
   });
 
-  const { mutate: updateExam, isPending } = useUpdateExam({
-    onSuccess: () => onSubmit(),
-  });
+  const { mutate: updateExam, isPending } = useUpdateExam();
 
   const [questions, setQuestions] = useState(exam?.questions || []);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -72,10 +74,8 @@ export default function UpdateExamForm({ exam, onSubmit }) {
   return (
     <form
       onSubmit={handleSubmit(onSubmitForm)}
-      className="space-y-6 max-w-2xl mx-auto"
+      className="space-y-6 w-full mx-auto"
     >
-      <h2 className="text-xl font-semibold mb-2">Update Exam</h2>
-
       <div className="space-y-2">
         <label className="block font-medium">Exam Title</label>
         <Input {...register("title")} />
@@ -197,13 +197,9 @@ export default function UpdateExamForm({ exam, onSubmit }) {
         )}
       </div>
 
-      <Button
-        type="submit"
-        disabled={isPending}
-        className="bg-blue-600 text-white"
-      >
-        {isPending ? "Updating..." : "Save Changes"}
-      </Button>
+      <LoadingButton type="submit" loading={isPending}>
+        Update Exam
+      </LoadingButton>
 
       {/* Add Question Modal */}
       {showAddForm && (
