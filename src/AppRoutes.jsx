@@ -8,6 +8,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import SuspenseFallback from "@/components/SuspenseFallback";
 import ProtectedLessonRoute from "@/components/ProtectedLessonRoute";
+import ShoppingCart from "./pages/ShoppingCart";
 
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
@@ -92,6 +93,14 @@ export default function AppRouter() {
                 <ProtectedLessonRoute>
                   <PaidLesson key={location.pathname} />
                 </ProtectedLessonRoute>
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="cart"
+            element={
+              <SuspenseFallback>
+                <ShoppingCart />
               </SuspenseFallback>
             }
           />
