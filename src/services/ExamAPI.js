@@ -59,7 +59,7 @@ export const examApi = {
     return response.data;
   },
 
-  // Get exam details before starting (this endpoint doesn't exists)
+  // Get exam details before starting (this endpoint doesn't exist)
   getExamDetails: async (examId) => {
     // Since there's no dedicated exam details endpoint, 
     // we'll use the getAllExams and filter by ID
@@ -69,9 +69,13 @@ export const examApi = {
       const exam = exams.find(e => e._id === examId);
       return { data: { exam } };
     } catch (error) {
-      // Fallback: If no exam details endpoint exists, 
-      // you might need to start the exam to get details
       throw new Error('Exam details not available');
     }
-  }
+  },
+
+    // Get exam data with questions (for taking the exam)
+    getExamData: async (examId) => {
+      const response = await api.get(`/exam/get/${examId}`);
+      return response.data;
+    },
 };

@@ -256,7 +256,7 @@ export default function AppRouter() {
           }
         />
         <Route
-          path="/studentExam/exam/:examId"
+          path="/exam/get/:examId"
           element={
             <SuspenseFallback>
               <TakeExam />

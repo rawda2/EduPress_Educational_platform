@@ -11,8 +11,7 @@ export function useExamSubmission(examId, onSuccess) {
     onMutate: () => setIsSubmitting(true),
     onSuccess: (data) => {
       setIsSubmitting(false);
-      
-      // Handle API response structure
+
       if (data.success) {
         toast.success(data.message || 'Exam submitted successfully!');
         onSuccess?.(data);
@@ -29,7 +28,6 @@ export function useExamSubmission(examId, onSuccess) {
   });
 
   const submitExam = (answers) => {
-    // Format answers for API - your API expects this exact format
     const formattedAnswers = Array.isArray(answers) ? answers : 
       Object.entries(answers).map(([questionId, selectedAnswer]) => ({
         questionId,

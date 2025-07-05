@@ -43,7 +43,6 @@ export function useExamAnswers(questions = []) {
     setAnswers({});
   }, []);
 
-  // Get answers in API format
   const getAnswersForSubmission = useCallback(() => {
     return Object.entries(answers).map(([questionId, selectedAnswer]) => ({
       questionId,

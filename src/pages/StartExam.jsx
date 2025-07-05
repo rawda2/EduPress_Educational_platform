@@ -22,12 +22,10 @@ export default function StartExam() {
 
   const fetchExamDetails = async () => {
     try {
-      // Try to get exam details first
       let data;
       try {
         data = await examApi.getExamDetails(examId);
       } catch (err) {
-        // If no exam details endpoint, try to get from all exams
         console.log('Exam details not available, fetching from all exams');
         const allExams = await examApi.getAllExams();
         const exams = allExams.data || allExams;
