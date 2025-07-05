@@ -32,6 +32,14 @@ export default function LoginForm() {
   const { isLoading, login } = useLogin();
 
   const onSubmit = async (data) => {
+    if (data.email === "S_admin@gmail.com") {
+      form.setError("email", {
+        type: "manual",
+        message: "unauthorized to access this api!lol",
+      });
+      return null;
+    }
+
     login(data);
   };
 

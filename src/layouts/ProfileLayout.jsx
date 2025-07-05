@@ -1,10 +1,13 @@
+import Sidebar from "./../pages/Profile/Sidebar";
 import { Outlet } from "react-router";
 
 export default function ProfileLayout() {
   return (
-    <div>
-      <h1>ProfileLayout</h1>
-      <Outlet />
+    <div className="flex min-h-screen bg-slate-50">
+      <Sidebar />
+      <main className="flex-1  ">
+        <Outlet />
+      </main>
     </div>
   );
 }

@@ -2,21 +2,22 @@
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 
-export default function QuickActions() {
+export default function QuickActions({ onAddLesson, onAddExam, onAddQuestion }) {
   return (
     <div className="flex flex-wrap gap-3">
-      <Button variant="default" className="flex gap-2">
-        <PlusCircle size={16} />
-        Add Admin
-      </Button>
-      <Button variant="secondary" className="flex gap-2">
+      <Button onClick={onAddLesson} variant="default" className="flex gap-2">
         <PlusCircle size={16} />
         Add Lesson
       </Button>
-      <Button variant="secondary" className="flex gap-2">
+      <Button onClick={onAddExam} variant="secondary" className="flex gap-2">
         <PlusCircle size={16} />
         Add Exam
+      </Button>
+      <Button onClick={onAddQuestion} variant="secondary" className="flex gap-2">
+        <PlusCircle size={16} />
+        Add Question
       </Button>
     </div>
   );
 }
+

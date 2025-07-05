@@ -9,8 +9,8 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useQuestions } from "@/hooks/admin/useQuestions";
-import { useExams } from "@/hooks/admin/useExams";
+import { useQuestions } from "@/hooks/admin/questions/useQuestions";
+import { useExams } from "@/hooks/admin/exams/useExams";
 import AddQuestionForm from "@/features/admin/AddQuestionForm";
 import UpdateQuestionForm from "@/features/admin/UpdateQuestionForm";
 import ViewQuestionDetails from "@/features/admin/ViewQuestionDetails";

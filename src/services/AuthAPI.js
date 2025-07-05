@@ -61,35 +61,39 @@ export async function getCurrentUser(token) {
   return res.data.data;
 }
 
+// ffs leave this it updates the validation
 // handles user registration, sets form errors, and shows toast on success or error
-// export async function registerUser(userData, form) {
-//   try {
-//     const res = await axios.post(SIGNUP_URL, userData);
-//     if (res.data.success) {
-//       form.reset();
-//       toast.success(
-//         "Account created! A verification email will be sent to you in moments.",
-//         {
-//           duration: 4000,
-//           position: "top-center",
-//         }
-//       );
-//       return { success: true };
-//     }
-//   } catch (error) {
-//     const message = error.response?.data?.message;
+export async function RegisterUser(userData, form) {
+  try {
+    const res = await axios.post(SIGNUP_URL, userData);
+    console.log(res);
+    if (res.data.success) {
+      form.reset();
+      toast.success(
+        "Account created! A verification email will be sent to you in moments.",
+        {
+          duration: 4000,
+          position: "top-center",
+        }
+      );
+      return { success: true };
+    }
+  } catch (error) {
+    const message = error.response?.data?.message;
 
-//     if (message === "user already exist") {
-//       form.setError("email", { message });
-//     } else {
-//       toast.error("An unexpected error occurred. Please try again later.", {
-//         duration: 4000,
-//         position: "top-center",
-//       });
-//     }
-//     return { success: false };
-//   }
-// }
+    const errMessage = "email already used or phonenumber";
+    if (message === "user already exist") {
+      form.setError("email", { message: errMessage });
+      form.setError("phoneNumber", { message: errMessage });
+    } else {
+      toast.error("An unexpected error occurred. Please try again later.", {
+        duration: 4000,
+        position: "top-center",
+      });
+    }
+    return { success: false };
+  }
+}
 export async function registerUser(data) {
   const res = await axios.post(SIGNUP_URL, data);
   if (!res.data.success) throw new Error(res.data.message);

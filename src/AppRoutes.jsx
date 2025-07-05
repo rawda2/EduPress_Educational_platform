@@ -2,28 +2,30 @@ import { lazy } from "react";
 import { Toaster } from "sonner";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 
-import NotFound from "@/pages/NotFound";
-import Unauthorized from "@/pages/Unauthorized";
-import ScrollToTop from "@/components/ScrollToTop";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import SuspenseFallback from "@/components/SuspenseFallback";
-import ProtectedLessonRoute from "@/components/ProtectedLessonRoute";
-import ShoppingCart from "./pages/ShoppingCart";
+const NotFound = lazy(() => import("@/pages/NotFound"));
+const ScrollToTop = lazy(() => import("@/components/ScrollToTop"));
+const ProtectedRoute = lazy(() => import("@/components/ProtectedRoute"));
+const SuspenseFallback = lazy(() => import("@/components/SuspenseFallback"));
+const MyCourses = lazy(() => import("@/pages/Profile/MyCourses"));
+const Teachers = lazy(() => import("@/pages/Profile/Teachers"));
+const Reviews = lazy(() => import("@/pages/Profile/Reviews"));
 
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
 const ProfileLayout = lazy(() => import("@/layouts/ProfileLayout"));
 const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"));
+const ProtectedLessonRoute = lazy(() =>
+  import("@/components/ProtectedLessonRoute")
+);
 
 const Home = lazy(() => import("@/pages/Home"));
 const About = lazy(() => import("@/pages/About"));
 const Lessons = lazy(() => import("@/pages/Lessons"));
-const Profile = lazy(() => import("@/pages/Profile"));
 const SingleLesson = lazy(() => import("@/pages/SingleLesson"));
+const Profile = lazy(() => import("@/pages/Profile/Profile"));
 
 const Login = lazy(() => import("@/pages/Login"));
 const Register = lazy(() => import("@/pages/Register"));
-
 const TakeExam = lazy(() => import("@/pages/TakeExam"));
 const StartExam = lazy(() => import("@/pages/StartExam"));
 const PaidLesson = lazy(() => import("@/pages/PaidLesson"));
@@ -35,6 +37,8 @@ const DashExams = lazy(() => import("@/pages/dashboard/dashExams"));
 const DashLessons = lazy(() => import("@/pages/dashboard/dashLessons"));
 const DashStudents = lazy(() => import("@/pages/dashboard/dashStudents"));
 const DashQuestions = lazy(() => import("@/pages/dashboard/dashQuestions"));
+
+const Unauthorized = lazy(() => import("@/pages/Unauthorized"));
 
 export default function AppRouter() {
   return (
@@ -122,6 +126,30 @@ export default function AppRouter() {
                 </SuspenseFallback>
               }
             />
+            <Route
+              path="courses"
+              element={
+                <SuspenseFallback>
+                  <MyCourses />
+                </SuspenseFallback>
+              }
+            />
+            <Route
+              path="teachers"
+              element={
+                <SuspenseFallback>
+                  <Teachers />
+                </SuspenseFallback>
+              }
+            />
+            <Route
+              path="reviews"
+              element={
+                <SuspenseFallback>
+                  <Reviews />
+                </SuspenseFallback>
+              }
+            />
             {/* <Route path="settings" element={<div>Profile Settings</div>} /> */}
           </Route>
         </Route>
@@ -201,7 +229,7 @@ export default function AppRouter() {
             path="students"
             element={
               <SuspenseFallback>
-                <DashStudents />
+                <DashStudents user="user" />
               </SuspenseFallback>
             }
           />
@@ -213,7 +241,16 @@ export default function AppRouter() {
               </SuspenseFallback>
             }
           />
-          {/* <Route path="settings" element={<div>Profile Settings</div>} /> */}
+          {/* for s_admin only */}
+          <Route
+            path="admins"
+            element={
+              <SuspenseFallback>
+                <DashStudents user="admin" />
+              </SuspenseFallback>
+            }
+          />
+          {/* <Route path="settings" element={<DashboardSettings />} /> */}
         </Route>
 
         {/* Unauthorized Page */}
