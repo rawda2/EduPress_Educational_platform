@@ -50,7 +50,7 @@ export default function ExamCard({ exam }) {
         
         <div className="mb-2 space-y-0.5">
           <Link
-            to={`/exams/${examId}`}
+            to={`/studentExams/start/${examId}`}
             className="hover:underline hover:text-primary"
           >
             <h3 className="line-clamp-2 text-base font-semibold capitalize sm:text-lg">
@@ -93,7 +93,7 @@ export default function ExamCard({ exam }) {
           variant={isAvailable ? "default" : "secondary"}
         >
           <Link
-            to={`/exams/${examId}`}
+            to={`/studentExams/start/${examId}`}
             className="ms-auto flex items-center justify-center"
           >
             {isAvailable ? "Take Exam" : "Not Available"}
