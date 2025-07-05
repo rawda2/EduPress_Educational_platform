@@ -248,7 +248,7 @@ export default function AppRouter() {
 
         {/* Exam Routes */}
         <Route
-          path="/start/:examId"
+          path="/studentExam/start/:examId"
           element={
             <SuspenseFallback>
               <StartExam />
@@ -256,7 +256,7 @@ export default function AppRouter() {
           }
         />
         <Route
-          path="/exam/:examId"
+          path="/studentExam/exam/:examId"
           element={
             <SuspenseFallback>
               <TakeExam />
@@ -264,7 +264,7 @@ export default function AppRouter() {
           }
         />
         <Route
-          path="/exams/score/:examId"
+          path="/studentExam/exams/score/:examId"
           element={
             <SuspenseFallback>
               <ExamResults />

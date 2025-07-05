@@ -22,34 +22,34 @@ api.interceptors.request.use((config) => {
 export const examApi = {
   // Start exam
   startExam: async (examId) => {
-    const response = await api.post(`/studentExams/start/${examId}`);
+    const response = await api.post(`/studentExam/start/${examId}`);
     return response.data;
   },
 
   // Get remaining time for exam
   getRemainingTime: async (examId) => {
-    const response = await api.get(`/studentExams/exams/remaining-time/${examId}`);
+    const response = await api.get(`/studentExam/exams/remaining-time/${examId}`);
     return response.data;
   },
 
   // Submit exam answers
   submitExam: async (examId, answers) => {
-    const response = await api.post(`/studentExams/submit/${examId}`, {
+    const response = await api.post(`/studentExam/submit/${examId}`, {
       answers
     });
     return response.data;
   },
 
-  // Get student's exam score
-  getExamScore: async (examId) => {
-    const response = await api.get(`/studentExams/exams/score/${examId}`);
+  // Get student's exam score (for individual student)
+  getStudentExamScore: async (examId) => {
+    const response = await api.get(`/studentExam/exams/score/${examId}`);
     return response.data;
   },
 
   // Get all student scores for exam (admin only)
   getAllExamScores: async (examId, studentName = null) => {
     const params = studentName ? { studentName } : {};
-    const response = await api.get(`/studentExams/exams/${examId}`, { params });
+    const response = await api.get(`/studentExam/exams/${examId}`, { params });
     return response.data;
   },
 
@@ -57,6 +57,21 @@ export const examApi = {
   getAllExams: async () => {
     const response = await api.get('/exam');
     return response.data;
+  },
+
+  // Get exam details before starting (this endpoint doesn't exists)
+  getExamDetails: async (examId) => {
+    // Since there's no dedicated exam details endpoint, 
+    // we'll use the getAllExams and filter by ID
+    try {
+      const response = await api.get('/exam');
+      const exams = response.data.data || response.data;
+      const exam = exams.find(e => e._id === examId);
+      return { data: { exam } };
+    } catch (error) {
+      // Fallback: If no exam details endpoint exists, 
+      // you might need to start the exam to get details
+      throw new Error('Exam details not available');
+    }
   }
-  
 };
