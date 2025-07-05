@@ -1,41 +1,44 @@
-import StatsCards from "@/features/admin/StatsCards";
-import QuickActions from "@/features/admin/QuickActions";
-import { useAllUsers } from "@/hooks/admin/useAllUsers";
-import { useLessons } from "@/hooks/admin/useLessons";
-import { useExams } from "@/hooks/admin/exams/useExams";
-import { useQuestions } from "@/hooks/admin/questions/useQuestions";
-import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
-import { Cards, SAdminActions } from "./SuperAdmin";
-import { UserCog, Users } from "lucide-react";
-import { useAllAdmins } from "@/hooks/admin/useAllAdmins";
+import {
+  X,
+  Loader2,
+  // UserCog, Users
+} from "lucide-react";
 import { useState, useRef } from "react";
-import { X } from "lucide-react";
+
+import StatsCards from "@/features/admin/StatsCards";
 import AddExamForm from "@/features/admin/AddExamForm";
+// import QuickActions from "@/features/admin/QuickActions";
 import AddQuestionForm from "@/features/admin/AddQuestionForm";
 
+import { useLessons } from "@/hooks/admin/useLessons";
+import { useAllUsers } from "@/hooks/admin/useAllUsers";
+import { useExams } from "@/hooks/admin/exams/useExams";
+// import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
+// import { useAllAdmins } from "@/hooks/admin/useAllAdmins";
+import { useQuestions } from "@/hooks/admin/questions/useQuestions";
+
+// import { Cards, SAdminActions } from "../SuperAdmin";
+
 export default function DashboardHome() {
-  const { data: users = [], isLoading: loadingUsers } = useAllUsers();
-  const { data: admins = [], isLoading: loadingAdmins } = useAllAdmins();
-  const { data: lessons = [], isLoading: loadingLessons } = useLessons();
   const { data: exams = [], isLoading: loadingExams } = useExams();
+  const { data: users = [], isLoading: loadingUsers } = useAllUsers();
+  const { data: lessons = [], isLoading: loadingLessons } = useLessons();
+  // const { data: admins = [], isLoading: loadingAdmins } = useAllAdmins();
   const { data: questions = [], isLoading: loadingQuestions } = useQuestions();
 
   const isLoading =
-    loadingUsers ||
-    loadingLessons ||
-    loadingExams ||
-    loadingQuestions ||
-    loadingAdmins;
+    loadingUsers || loadingLessons || loadingExams || loadingQuestions;
+  // || loadingAdmins;
 
   const stats = {
-    students: users.filter((u) => u.role === "user").length,
-    lessons: lessons.length,
     exams: exams.length,
+    lessons: lessons.length,
     questions: questions.length,
+    students: users.filter((u) => u.role === "user").length,
   };
 
-  const [showLessonForm, setShowLessonForm] = useState(false);
   const [showExamForm, setShowExamForm] = useState(false);
+  const [showLessonForm, setShowLessonForm] = useState(false);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
 
   const modalRef = useRef();
@@ -47,33 +50,39 @@ export default function DashboardHome() {
     }
   };
 
-  const sAdmin = useIsSuperAdmin();
-  // super admin shittycards data stuff idk
-  const data = [
-    {
-      title: "Students",
-      value: users.length,
-      icon: <Users className="text-primary" />,
-    },
-    {
-      title: "Admins",
-      value: admins.length,
-      icon: <UserCog className="text-primary" />,
-    },
-  ];
+  // const sAdmin = useIsSuperAdmin();
+  // const data = [
+  //   {
+  //     title: "Students",
+  //     value: users.length,
+  //     icon: <Users className="text-primary" />,
+  //   },
+  //   {
+  //     title: "Admins",
+  //     value: admins.length,
+  //     icon: <UserCog className="text-primary" />,
+  //   },
+  // ];
 
   return (
     <div className="space-y-6 px-4 py-6">
       <h1 className="text-2xl font-semibold">Dashboard Overview</h1>
 
-      {isLoading ? (
+      {/* {isLoading ? (
         <p className="text-muted-foreground">Loading stats...</p>
       ) : sAdmin ? (
         <Cards {...{ data }} />
       ) : (
         <StatsCards stats={stats} />
+      )} */}
+
+      {isLoading ? (
+        <Loader2 className="animate-spin size-8 mx-auto my-28" />
+      ) : (
+        <StatsCards stats={stats} />
       )}
-      <div className="mt-6">
+
+      {/* <div className="mt-6">
         {sAdmin ? (
           <SAdminActions />
         ) : (
@@ -83,8 +92,8 @@ export default function DashboardHome() {
             onAddQuestion={() => setShowQuestionForm(true)}
           />
         )}
-      </div>
-      {/* Add Lesson Modal */}
+      </div> */}
+
       {showLessonForm && (
         <div
           className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
