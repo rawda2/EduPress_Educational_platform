@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import ExamsTable from "@/features/admin/ExamsTable";
 import ViewExamDetails from "@/features/admin/ViewExamDetails";
-import UpdateExamForm from "@/features/admin/UpdateExamForm"; // ✨ الجديد
+import UpdateExamForm from "@/features/admin/UpdateExamForm"; 
 import AddExamForm from "@/features/admin/AddExamForm";
+import ConfirmDialog from "@/features/admin/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
 import {
@@ -12,20 +13,23 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useExams } from "@/hooks/admin/useExams";
+import { useExams } from "@/hooks/admin/exams/useExams";
+import { useDeleteExam } from "@/hooks/admin/exams/useDeleteExam";
 
 export default function DashExams() {
   const { data, isLoading, isError } = useExams();
   const [selectedClassLevel, setSelectedClassLevel] = useState("all");
-
   const [showForm, setShowForm] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false); // ✨ الجديد
+  const [showEditForm, setShowEditForm] = useState(false); 
   const [selectedExam, setSelectedExam] = useState(null);
+  const [examToDelete, setExamToDelete] = useState(null);
 
+  const { mutate: deleteExam, isPending: isDeleting } = useDeleteExam();
   const modalRef = useRef(null);
-
   const exams = data || [];
+  const allClassLevels = Array.from(new Set(exams.map((exam) => exam.classLevel)));
+
 
   const filteredExams =
     selectedClassLevel === "all"
@@ -42,16 +46,18 @@ export default function DashExams() {
     setShowEditForm(true);
   };
 
-  const handleDelete = (id) => console.log("Delete exam:", id);
-
-  const handleExamSubmit = (formData) => {
-    console.log("Submitted Exam Data:", formData);
-    setShowForm(false);
+  const handleDelete = (exam) => {
+    setExamToDelete(exam);
   };
 
-  const handleExamUpdate = (updatedData) => {
-    console.log("Updated Exam Data:", updatedData);
-    // TODO: send PUT request to update exam in backend
+  const confirmDelete = () => {
+    if (examToDelete?._id) {
+      deleteExam(examToDelete._id);
+      setExamToDelete(null);
+    }
+  };
+
+  const handleExamUpdate = () => {
     setShowEditForm(false);
   };
 
@@ -71,14 +77,12 @@ export default function DashExams() {
         setShowEditForm(false);
       }
     };
-
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   return (
     <div className="space-y-6 relative">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Exams</h1>
         <Button
@@ -90,24 +94,26 @@ export default function DashExams() {
         </Button>
       </div>
 
-      {/* Filter */}
-      <div className="w-[200px]">
-        <Select
-          value={selectedClassLevel}
-          onValueChange={setSelectedClassLevel}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by class" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Grades</SelectItem>
-            <SelectItem value="Grade 1 Secondary">Grade 1 Secondary</SelectItem>
-            <SelectItem value="Grade 2 Secondary">Grade 2 Secondary</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+        <div className="w-[200px]">
+      <Select
+        value={selectedClassLevel}
+        onValueChange={setSelectedClassLevel}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Filter by class" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Grades</SelectItem>
+          {allClassLevels.map((level) => (
+            <SelectItem key={level} value={level}>
+              {level}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
 
-      {/* Table */}
+
       {isLoading ? (
         <p className="text-muted-foreground">Loading exams...</p>
       ) : isError ? (
@@ -123,43 +129,21 @@ export default function DashExams() {
         />
       )}
 
-      {/* Add Exam Modal */}
       {showForm && (
-        <div
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center"
-          onClick={handleBackdropClick}
-        >
-          <div
-            ref={modalRef}
-            className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg border border-border w-full max-w-2xl mx-auto"
-          >
-            <button
-              onClick={() => setShowForm(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition"
-              aria-label="Close form"
-            >
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center" onClick={handleBackdropClick}>
+          <div ref={modalRef} className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg border border-border w-full max-w-2xl mx-auto">
+            <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition">
               <X size={20} />
             </button>
-            <AddExamForm onSubmit={handleExamSubmit} />
+            <AddExamForm onSuccess={() => setShowForm(false)} />
           </div>
         </div>
       )}
 
-      {/* View Exam Details Modal */}
       {showDetails && selectedExam && (
-        <div
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={handleBackdropClick}
-        >
-          <div
-            ref={modalRef}
-            className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg border border-border w-full max-w-3xl mx-auto overflow-y-auto max-h-[90vh]"
-          >
-            <button
-              onClick={() => setShowDetails(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition"
-              aria-label="Close details"
-            >
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={handleBackdropClick}>
+          <div ref={modalRef} className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg border border-border w-full max-w-3xl mx-auto overflow-y-auto max-h-[90vh]">
+            <button onClick={() => setShowDetails(false)} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition">
               <X size={20} />
             </button>
             <ViewExamDetails exam={selectedExam} />
@@ -167,26 +151,25 @@ export default function DashExams() {
         </div>
       )}
 
-      {/* Edit Exam Modal */}
       {showEditForm && selectedExam && (
-        <div
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={handleBackdropClick}
-        >
-          <div
-            ref={modalRef}
-            className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg border border-border w-full max-w-2xl mx-auto overflow-y-auto max-h-[90vh]"
-          >
-            <button
-              onClick={() => setShowEditForm(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition"
-              aria-label="Close edit"
-            >
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={handleBackdropClick}>
+          <div ref={modalRef} className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg border border-border w-full max-w-2xl mx-auto overflow-y-auto max-h-[90vh]">
+            <button onClick={() => setShowEditForm(false)} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition">
               <X size={20} />
             </button>
             <UpdateExamForm exam={selectedExam} onSubmit={handleExamUpdate} />
           </div>
         </div>
+      )}
+
+      {examToDelete && (
+        <ConfirmDialog
+          title="Delete Exam"
+          description={`Are you sure you want to delete "${examToDelete.title}"? This action cannot be undone.`}
+          onCancel={() => setExamToDelete(null)}
+          onConfirm={confirmDelete}
+          loading={isDeleting}
+        />
       )}
     </div>
   );
