@@ -1,5 +1,8 @@
-// components/forms/ExamForm.jsx
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { examSchema } from "@/validations/ExamSchema";
+import { useAddExam } from "@/hooks/admin/exams/useAddExam"; 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,70 +16,82 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-export default function AddExamForm({ onSubmit }) {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    duration: "",
-    classLevel: "",
-    startDate: "",
-    endDate: "",
-    isPublished: false,
+export default function AddExamForm({ onSuccess }) {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(examSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      duration: "",
+      classLevel: "",
+      startDate: "",
+      endDate: "",
+      isPublished: false,
+    },
   });
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  const isPublished = watch("isPublished");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+const { mutate: addExam, isPending } = useAddExam({ onSuccess });
+
+const onSubmit = (formData) => {
+  formData.duration = Number(formData.duration);
+
+  // convert date strings to ISO if needed
+  if (formData.startDate) formData.startDate = new Date(formData.startDate).toISOString();
+  if (formData.endDate) formData.endDate = new Date(formData.endDate).toISOString();
+
+  console.log("Submitting formData:", formData);
+  addExam(formData);
+};
+
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="space-y-6 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-gray-100 p-6 rounded-xl shadow-md border border-border dark:border-gray-700 max-w-2xl mx-auto"
     >
       <h2 className="text-xl font-semibold mb-4">Add New Exam</h2>
 
+      {/* Title */}
       <div className="space-y-2">
         <Label htmlFor="title">Exam Title</Label>
-        <Input
-          id="title"
-          value={formData.title}
-          onChange={(e) => handleChange("title", e.target.value)}
-          placeholder="Enter exam title"
-          required
-        />
+        <Input id="title" {...register("title")} placeholder="Enter exam title" />
+        {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
       </div>
 
+      {/* Description */}
       <div className="space-y-2">
         <Label htmlFor="description">Description</Label>
         <Textarea
           id="description"
-          value={formData.description}
-          onChange={(e) => handleChange("description", e.target.value)}
+          {...register("description")}
           placeholder="Brief description of the exam"
-          required
         />
+        {errors.description && (
+          <p className="text-red-500 text-sm">{errors.description.message}</p>
+        )}
       </div>
 
+      {/* Duration */}
       <div className="space-y-2">
         <Label htmlFor="duration">Duration (minutes)</Label>
-        <Input
-          type="number"
-          id="duration"
-          value={formData.duration}
-          onChange={(e) => handleChange("duration", e.target.value)}
-          placeholder="e.g. 60"
-          required
-        />
+        <Input type="number" id="duration" {...register("duration")} placeholder="e.g. 60" />
+        {errors.duration && (
+          <p className="text-red-500 text-sm">{errors.duration.message}</p>
+        )}
       </div>
 
+      {/* Class Level */}
       <div className="space-y-2">
         <Label>Class Level</Label>
-        <Select onValueChange={(val) => handleChange("classLevel", val)}>
+        <Select onValueChange={(val) => setValue("classLevel", val)}>
           <SelectTrigger>
             <SelectValue placeholder="Select grade" />
           </SelectTrigger>
@@ -86,42 +101,41 @@ export default function AddExamForm({ onSubmit }) {
             <SelectItem value="Grade 3 Secondary">Grade 3 Secondary</SelectItem>
           </SelectContent>
         </Select>
+        {errors.classLevel && (
+          <p className="text-red-500 text-sm">{errors.classLevel.message}</p>
+        )}
       </div>
 
+      {/* Start & End Dates */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="startDate">Start Date</Label>
-          <Input
-            type="date"
-            id="startDate"
-            value={formData.startDate}
-            onChange={(e) => handleChange("startDate", e.target.value)}
-            required
-          />
+          <Input type="date" id="startDate" {...register("startDate")} />
+          {errors.startDate && (
+            <p className="text-red-500 text-sm">{errors.startDate.message}</p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="endDate">End Date</Label>
-          <Input
-            type="date"
-            id="endDate"
-            value={formData.endDate}
-            onChange={(e) => handleChange("endDate", e.target.value)}
-            required
-          />
+          <Input type="date" id="endDate" {...register("endDate")} />
+          {errors.endDate && (
+            <p className="text-red-500 text-sm">{errors.endDate.message}</p>
+          )}
         </div>
       </div>
 
+      {/* Switch */}
       <div className="flex items-center gap-4">
         <Switch
           id="isPublished"
-          checked={formData.isPublished}
-          onCheckedChange={(checked) => handleChange("isPublished", checked)}
+          checked={isPublished}
+          onCheckedChange={(checked) => setValue("isPublished", checked)}
         />
         <Label htmlFor="isPublished">Publish Exam</Label>
       </div>
 
-      <Button type="submit" className="w-full">
-        Submit Exam
+      <Button type="submit" className="w-full" disabled={isPending}>
+        {isPending ? "Submitting..." : "Submit Exam"}
       </Button>
     </form>
   );

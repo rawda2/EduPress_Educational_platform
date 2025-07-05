@@ -28,11 +28,7 @@ export function formatPrice(price) {
 }
 
 export function axiosErrorHandler(error, message) {
-  if (isAxiosError(error)) {
-    return (
-      error.response?.data || error.response?.data.message || error.message
-    );
-  } else {
-    return message;
-  }
+  if (isAxiosError(error)) return error.response?.data.message || error.message;
+
+  return message;
 }

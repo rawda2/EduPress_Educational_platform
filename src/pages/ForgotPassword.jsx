@@ -1,22 +1,26 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { emailSchema } from "@/validations/RegisterSchema";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Eye, EyeOff } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import {
   Form,
-  FormField,
   FormItem,
   FormLabel,
+  FormField,
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import SubmitBtn from "@/components/SubmitBtn";
-import { useState } from "react";
-import { ResetPasswordSchema } from "@/validations/ResetPasswordSchema";
 import LoginSuccess from "./LoginSuccess";
-import { Eye, EyeOff } from "lucide-react";
+import { Input } from "@/components/ui/input";
+
 import { forgotPassword, resetPassword } from "@/services/AuthAPI";
+
+import { emailSchema } from "@/validations/RegisterSchema";
+import { ResetPasswordSchema } from "@/validations/ResetPasswordSchema";
+import { Button } from "@/components/ui/button";
+import LoadingButton from "@/components/LoadingButton";
 
 export default function ForgotPassword() {
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -49,11 +53,12 @@ export default function ForgotPassword() {
   if (actionSuccess) return <LoginSuccess resetPassword={true} />;
 
   return (
-    <Form {...form}>
-      <div className="max-lg:col-span-2 w-[80%] mx-auto [&_label]:font-bold [&_label]:text-lg flex flex-col justify-center">
-        <h1 className="lg:text-3xl text-xl font-bold mb-8 text-center">
-          Forgot Password
-        </h1>
+    <div className="max-lg:col-span-2 w-[80%] mx-auto [&_label]:font-bold [&_label]:text-lg flex flex-col justify-center">
+      <h1 className="lg:text-3xl text-xl font-bold mb-8 text-center">
+        Forgot Password
+      </h1>
+
+      <Form {...form}>
         {showResetPassword ? (
           <form
             onSubmit={form.handleSubmit(handleResetPassword)}
@@ -97,9 +102,12 @@ export default function ForgotPassword() {
               />
             ))}
 
-            <SubmitBtn disabled={form.formState.isSubmitting}>
+            <LoadingButton
+              className="w-full"
+              loading={form.formState.isSubmitting}
+            >
               Reset Password
-            </SubmitBtn>
+            </LoadingButton>
           </form>
         ) : (
           <>
@@ -127,27 +135,24 @@ export default function ForgotPassword() {
                 )}
               />
 
-              <SubmitBtn disabled={form.formState.isSubmitting}>
+              <LoadingButton
+                className="w-full"
+                loading={form.formState.isSubmitting}
+              >
                 Send Reset Link
-              </SubmitBtn>
+              </LoadingButton>
             </form>
-            <button
-              className="!mt-4 underline cursor-pointer"
+            <Button
+              variant="link"
+              className="!mt-4"
               onClick={() => setShowResetPassword(true)}
             >
-              you got the OTP code?
-            </button>
+              I got the OTP code?
+            </Button>
           </>
         )}
-      </div>
-      <div className="h-dvh max-lg:hidden">
-        <img
-          src="/forgot-password.jpg"
-          alt="Description of image"
-          className="object-cover h-full w-full"
-        />
-      </div>
-    </Form>
+      </Form>
+    </div>
   );
 }
 
