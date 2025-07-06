@@ -1,27 +1,26 @@
-import React, { useState } from "react";
+import { useState } from "react";
+
 import {
   Table,
-  TableCaption,
-  TableHeader,
   TableRow,
   TableHead,
   TableBody,
   TableCell,
+  TableHeader,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
 import {
   Pagination,
-  PaginationContent,
   PaginationItem,
-  PaginationPrevious,
   PaginationNext,
   PaginationLink,
+  PaginationContent,
+  PaginationPrevious,
 } from "@/components/ui/pagination";
+import ViewStudentModal from "./students/ViewStudentModal";
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 10;
 
-export default function StudentsTable({ user_role, data, onShow }) {
+export default function StudentsTable({ data }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
@@ -39,33 +38,27 @@ export default function StudentsTable({ user_role, data, onShow }) {
 
   return (
     <div className="space-y-4">
-      <Table className="bg-white dark:bg-gray-900 border rounded-md shadow-sm">
-        <TableCaption className="text-sm text-muted-foreground">
-          List of registered students
-        </TableCaption>
-        <TableHeader>
-          <TableRow>
-            {(user_role === "admin" ? adminsHeader : studentsHeader).map(
-              (header) => (
-                <TableHead key={header}>
-                  {header.charAt(0).toUpperCase() + header.slice(1)}
-                </TableHead>
-              )
-            )}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {paginatedStudents.map((s) => (
-            <TableRow key={s._id}>
-              <TableCell className="text-xs text-muted-foreground">
-                {s._id.slice(0, 6)}...
-              </TableCell>
-              <TableCell>{s.fullName}</TableCell>
-              <TableCell>{s.email}</TableCell>
-              <TableCell>{s.phoneNumber}</TableCell>
-              {user_role !== "admin" && <TableCell>{s.classLevel}</TableCell>}
-              <TableCell>{s.role}</TableCell>
-              {user_role !== "admin" && (
+      <div className="border rounded-md shadow-sm">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Id</TableHead>
+              <TableHead>Full Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Class Level</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {paginatedStudents.map((s) => (
+              <TableRow key={s._id}>
+                <TableCell className="text-xs text-muted-foreground">
+                  {s._id.slice(0, 6)}...
+                </TableCell>
+                <TableCell>{s.fullName}</TableCell>
+                <TableCell>{s.email}</TableCell>
+                <TableCell>{s.classLevel}</TableCell>
                 <TableCell>
                   <span
                     className={`px-2 py-1 rounded text-xs ${
@@ -77,21 +70,14 @@ export default function StudentsTable({ user_role, data, onShow }) {
                     {s.isVerified ? "Active" : "Inactive"}
                   </span>
                 </TableCell>
-              )}
-              <TableCell className="space-x-2">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => onShow?.(s)}
-                  title="View Details"
-                >
-                  <Eye size={16} />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                <TableCell className="space-x-2">
+                  <ViewStudentModal student={s} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
@@ -134,15 +120,15 @@ export default function StudentsTable({ user_role, data, onShow }) {
   );
 }
 
-const studentsHeader = [
-  "id",
-  "full name",
-  "email",
-  "phone",
-  "class level",
-  "role",
-  "status",
-  "actions",
-];
+// const studentsHeader = [
+//   "id",
+//   "full name",
+//   "email",
+//   "phone",
+//   "class level",
+//   "role",
+//   "status",
+//   "actions",
+// ];
 
-const adminsHeader = ["id", "full name", "email", "phone", "role", "actions"];
+// const adminsHeader = ["id", "full name", "email", "phone", "role", "actions"];

@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
   SelectItem,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import LoadingButton from "@/components/LoadingButton";
 
-export default function UpdateQuestionForm({ question, onSuccess, onCancel }) {
+import { useUpdateQuestion } from "@/hooks/admin/questions/UseUpdateQuestion";
+
+export default function UpdateQuestionForm({ question }) {
+  const { isPending: isLoading, mutate: updateQuestion } = useUpdateQuestion();
+
   const [formData, setFormData] = useState({
     text: question?.text || "",
     type: question?.type || "multiple-choice",
@@ -19,7 +24,6 @@ export default function UpdateQuestionForm({ question, onSuccess, onCancel }) {
     points: question?.points || 1,
   });
 
-  // إذا النوع True/False، نخلي الـ options ثابتة
   useEffect(() => {
     if (formData.type === "true-false") {
       setFormData((prev) => ({
@@ -55,13 +59,11 @@ export default function UpdateQuestionForm({ question, onSuccess, onCancel }) {
       ...formData,
     };
 
-    onSuccess(updatedQuestion);
+    updateQuestion({ id: question._id, data: updatedQuestion });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
-      <h2 className="text-xl font-semibold mb-2">Edit Question</h2>
-
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block font-medium mb-1">Question Text</label>
         <Textarea
@@ -152,14 +154,9 @@ export default function UpdateQuestionForm({ question, onSuccess, onCancel }) {
         />
       </div>
 
-      <div className="flex justify-end gap-3 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" className="bg-blue-600 text-white">
-          Save Changes
-        </Button>
-      </div>
+      <LoadingButton type="submit" className="w-full" loading={isLoading}>
+        Edit Question
+      </LoadingButton>
     </form>
   );
 }

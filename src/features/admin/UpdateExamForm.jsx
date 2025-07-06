@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { examSchema } from "@/validations/ExamSchema";
@@ -15,10 +15,14 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Plus, X } from "lucide-react";
-import AddQuestionForm from "@/features/admin/AddQuestionForm";
+import AddQuestionForm from "@/features/admin/questions/AddQuestionForm";
 import UpdateQuestionForm from "@/features/admin/UpdateQuestionForm";
+import LoadingButton from "@/components/LoadingButton";
+// import useExam from "./exams/useExam";
 
-export default function UpdateExamForm({ exam, onSubmit }) {
+export default function UpdateExamForm({ exam }) {
+  // const { isLoadingExam, exam, error } = useExam(examId);
+
   const {
     register,
     handleSubmit,
@@ -38,9 +42,7 @@ export default function UpdateExamForm({ exam, onSubmit }) {
     },
   });
 
-  const { mutate: updateExam, isPending } = useUpdateExam({
-    onSuccess: () => onSubmit(),
-  });
+  const { mutate: updateExam, isPending } = useUpdateExam();
 
   const [questions, setQuestions] = useState(exam?.questions || []);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -58,7 +60,7 @@ export default function UpdateExamForm({ exam, onSubmit }) {
   };
 
   const onSubmitForm = (data) => {
-    const { startDate, endDate, ...rest } = data; 
+    const { startDate, endDate, ...rest } = data;
 
     updateExam({
       examId: exam._id,
@@ -70,25 +72,34 @@ export default function UpdateExamForm({ exam, onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6 max-w-2xl mx-auto">
-      <h2 className="text-xl font-semibold mb-2">Update Exam</h2>
-
+    <form
+      onSubmit={handleSubmit(onSubmitForm)}
+      className="space-y-6 w-full mx-auto"
+    >
       <div className="space-y-2">
         <label className="block font-medium">Exam Title</label>
         <Input {...register("title")} />
-        {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
+        {errors.title && (
+          <p className="text-destructive text-sm">{errors.title.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
         <label className="block font-medium">Description</label>
         <Textarea {...register("description")} />
-        {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+        {errors.description && (
+          <p className="text-destructive text-sm">
+            {errors.description.message}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
         <label className="block font-medium">Duration (minutes)</label>
         <Input type="number" {...register("duration")} />
-        {errors.duration && <p className="text-red-500 text-sm">{errors.duration.message}</p>}
+        {errors.duration && (
+          <p className="text-destructive text-sm">{errors.duration.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -103,7 +114,11 @@ export default function UpdateExamForm({ exam, onSubmit }) {
             <SelectItem value="Grade 3 Secondary">Grade 3 Secondary</SelectItem>
           </SelectContent>
         </Select>
-        {errors.classLevel && <p className="text-red-500 text-sm">{errors.classLevel.message}</p>}
+        {errors.classLevel && (
+          <p className="text-destructive text-sm">
+            {errors.classLevel.message}
+          </p>
+        )}
       </div>
 
       <div className="flex items-center gap-3">
@@ -119,12 +134,18 @@ export default function UpdateExamForm({ exam, onSubmit }) {
         <div className="space-y-2">
           <label className="block font-medium">Start Date</label>
           <Input type="date" {...register("startDate")} />
-          {errors.startDate && <p className="text-red-500 text-sm">{errors.startDate.message}</p>}
+          {errors.startDate && (
+            <p className="text-destructive text-sm">
+              {errors.startDate.message}
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <label className="block font-medium">End Date</label>
           <Input type="date" {...register("endDate")} />
-          {errors.endDate && <p className="text-red-500 text-sm">{errors.endDate.message}</p>}
+          {errors.endDate && (
+            <p className="text-destructive text-sm">{errors.endDate.message}</p>
+          )}
         </div>
       </div>
 
@@ -135,7 +156,7 @@ export default function UpdateExamForm({ exam, onSubmit }) {
           <Button
             type="button"
             onClick={() => setShowAddForm(true)}
-            className="bg-primary text-white flex items-center gap-2"
+            className="bg-primary flex items-center gap-2"
           >
             <Plus size={16} /> Add New Question
           </Button>
@@ -145,15 +166,33 @@ export default function UpdateExamForm({ exam, onSubmit }) {
           <p className="text-muted-foreground">No questions added yet.</p>
         ) : (
           questions.map((q, i) => (
-            <div key={q._id} className="p-4 border rounded-md bg-white dark:bg-[#1f2937]">
+            <div key={q._id} className="p-4 border rounded-md">
               <div className="flex justify-between">
                 <div>
-                  <p className="font-semibold">{i + 1}. {q.text}</p>
-                  <p className="text-sm text-gray-500">Type: {q.type} | Points: {q.points}</p>
+                  <p className="font-semibold">
+                    {i + 1}. {q.text}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Type: {q.type} | Points: {q.points}
+                  </p>
                 </div>
                 <div className="flex gap-2">
-                  <Button type="button" variant="outline" size="sm" onClick={() => setEditingQuestion(q)}>Edit</Button>
-                  <Button type="button" variant="destructive" size="sm" onClick={() => handleDeleteQuestion(q._id)}>Delete</Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setEditingQuestion(q)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDeleteQuestion(q._id)}
+                  >
+                    Delete
+                  </Button>
                 </div>
               </div>
             </div>
@@ -161,9 +200,9 @@ export default function UpdateExamForm({ exam, onSubmit }) {
         )}
       </div>
 
-      <Button type="submit" disabled={isPending} className="bg-blue-600 text-white">
-        {isPending ? "Updating..." : "Save Changes"}
-      </Button>
+      <LoadingButton type="submit" loading={isPending} className="w-full">
+        Update Exam
+      </LoadingButton>
 
       {/* Add Question Modal */}
       {showAddForm && (
@@ -171,7 +210,7 @@ export default function UpdateExamForm({ exam, onSubmit }) {
           <div className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg w-full max-w-2xl">
             <button
               onClick={() => setShowAddForm(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-red-500"
+              className="absolute top-4 right-4 text-gray-500 hover:text-destructive"
             >
               <X size={20} />
             </button>
@@ -193,7 +232,7 @@ export default function UpdateExamForm({ exam, onSubmit }) {
           <div className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg w-full max-w-2xl">
             <button
               onClick={() => setEditingQuestion(null)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-red-500"
+              className="absolute top-4 right-4 text-gray-500 hover:text-destructive"
             >
               <X size={20} />
             </button>
