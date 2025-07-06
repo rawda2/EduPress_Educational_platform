@@ -1,28 +1,28 @@
-import React, { useState } from "react";
+import { useState } from "react";
+
 import {
   Table,
-  TableCaption,
-  TableHeader,
   TableRow,
   TableHead,
   TableBody,
   TableCell,
+  TableHeader,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import {
   Pagination,
-  PaginationContent,
   PaginationItem,
-  PaginationPrevious,
   PaginationNext,
   PaginationLink,
+  PaginationContent,
+  PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Eye, Trash ,Pencil } from "lucide-react";
+import ViewLessonModal from "./lessons/ViewLessonModal";
+import DeleteLessonModal from "./lessons/DeleteLessonModal";
 import { LessonModalFrom } from "@/components/dashboard/LessonModal";
 
 const ITEMS_PER_PAGE = 5;
 
-export default function LessonsTable({ lessons = [], onShow, onDelete }) {
+export default function LessonsTable({ lessons = [] }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(lessons.length / ITEMS_PER_PAGE);
@@ -40,71 +40,52 @@ export default function LessonsTable({ lessons = [], onShow, onDelete }) {
 
   return (
     <div className="space-y-6">
-      <Table className="bg-white dark:bg-gray-900 border rounded-xl shadow-lg">
-        <TableCaption className="text-sm text-muted-foreground">
-          List of available lessons
-        </TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[150px]">Title</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Video</TableHead>
-            <TableHead>Class Level</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead className="text-center">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {paginatedLessons.length === 0 ? (
+      <div className="border rounded-xl shadow-lg">
+        <Table>
+          <TableHeader>
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
-                No lessons found.
-              </TableCell>
+              <TableHead className="w-[150px]">Title</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Class Level</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableRow>
-          ) : (
-            paginatedLessons.map((lesson) => (
-              <TableRow key={lesson._id}>
-                <TableCell className="font-medium">{lesson.title || "-"}</TableCell>
-                <TableCell className="max-w-[200px] truncate">
-                  {lesson.description || "-"}
-                </TableCell>
-                <TableCell>
-                  {lesson.video ? (
-                    <a
-                      href={lesson.video}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 underline"
-                    >
-                      View Video
-                    </a>
-                  ) : (
-                    <span className="text-muted-foreground">No Video</span>
-                  )}
-                </TableCell>
-                <TableCell>{lesson.classLevel || "N/A"}</TableCell>
-                <TableCell>
-                  {lesson.isPaid ? `${lesson.price || 0} EGP` : "Free"}
-                </TableCell>
-                <TableCell className="text-center space-x-2">
-                  <Button size="sm" variant="ghost" onClick={() => onShow(lesson)}>
-                    <Eye size={16} />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => onDelete(lesson)}
-                  >
-                    <Trash size={16} className="text-red-500" />
-                  </Button>
-                  <LessonModalFrom use="Edit" id={lesson._id} />
+          </TableHeader>
+
+          <TableBody>
+            {paginatedLessons.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="text-center py-6 text-muted-foreground"
+                >
+                  No lessons found.
                 </TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+            ) : (
+              paginatedLessons.map((lesson) => (
+                <TableRow key={lesson._id}>
+                  <TableCell className="font-medium">
+                    {lesson.title || "-"}
+                  </TableCell>
+                  <TableCell className="max-w-[200px] truncate">
+                    {lesson.description || "-"}
+                  </TableCell>
+                  <TableCell>{lesson.classLevel || "N/A"}</TableCell>
+                  <TableCell>
+                    {lesson.isPaid ? `${lesson.price || 0} EGP` : "Free"}
+                  </TableCell>
+                  <TableCell className="text-center space-x-2">
+                    <ViewLessonModal lesson={lesson} />
+                    <LessonModalFrom use="Edit" id={lesson?._id} />
+                    <DeleteLessonModal lessonId={lesson?._id} />
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       {totalPages > 1 && (
         <Pagination>
@@ -112,7 +93,9 @@ export default function LessonsTable({ lessons = [], onShow, onDelete }) {
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => handlePageChange(currentPage - 1)}
-                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                className={
+                  currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
 
@@ -130,7 +113,11 @@ export default function LessonsTable({ lessons = [], onShow, onDelete }) {
             <PaginationItem>
               <PaginationNext
                 onClick={() => handlePageChange(currentPage + 1)}
-                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                className={
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
               />
             </PaginationItem>
           </PaginationContent>

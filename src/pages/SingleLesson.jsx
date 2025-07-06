@@ -20,7 +20,7 @@ const SingleLesson = () => {
   if (isLoading || loading)
     return (
       <div className="flex justify-center items-center min-h-[90vh] w-full">
-        <Loader2 className="animate-spin size-20 mx-auto mt-10" />
+        <Loader2 className="animate-spin size-8 mx-auto mt-10" />
       </div>
     );
 

@@ -5,8 +5,6 @@ import { axiosErrorHandler } from "@/lib/utils";
 export async function getAllLessons() {
   const token = localStorage.getItem("token");
 
-  // console.log("token: ", token);
-
   try {
     const res = await axios.get("https://edu-master-delta.vercel.app/lesson", {
       headers: {
