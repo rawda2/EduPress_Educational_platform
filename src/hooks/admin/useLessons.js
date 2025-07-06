@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchLessonsAPI } from "@/services/AdminAPI";
 
-export function useLessons() {
+export function useLessons(filters = {}) {
   return useQuery({
-    queryKey: ["lessons"],
+    queryKey: ["lessons", filters],
     queryFn: async () => {
-      const result = await fetchLessonsAPI();
-      if (!result.success) throw new Error(result.message);
-      return result.lessons;
+      const result = await fetchLessonsAPI(filters);
+      return result.data;  
     },
   });
 }

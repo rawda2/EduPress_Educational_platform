@@ -4,7 +4,7 @@ import { RegisterSchema } from "@/validations/RegisterSchema";
 import { Form } from "@/components/ui/form";
 import { useState } from "react";
 
-import { registerUser } from "@/services/AuthAPI";
+import { RegisterUser } from "@/services/AuthAPI";
 import { RegisterFormInputs } from "@/features/auth/RegisterForm";
 
 export default function Register() {
@@ -24,7 +24,7 @@ export default function Register() {
       fullName: `${fn} ${ln}`,
     };
 
-    await registerUser(userData, form);
+    await RegisterUser(userData, form);
   };
 
   return (
@@ -51,4 +51,5 @@ const defaultValues = {
   password: "",
   cpassword: "",
   phoneNumber: "",
+  calssLevel:""
 };

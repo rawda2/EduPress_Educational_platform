@@ -85,7 +85,11 @@ export function RegisterFormInputs({
                     <FormItem className="flex flex-col">
                       <FormLabel htmlFor={field.name}>{field.label}</FormLabel>
                       <FormControl>
-                        <Select id={field.name} {...field}>
+                        <Select
+                          id={field.name}
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select Class Level" />
                           </SelectTrigger>

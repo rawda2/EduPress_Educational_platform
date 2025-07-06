@@ -25,7 +25,7 @@ export default function EditProfile() {
       setPreview(URL.createObjectURL(file))
     }
   }
-  const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhd2RhMzIwMDRAZ21haWwuY29tIiwiX2lkIjoiNjg1ZTkyMDdjYzU0YWE0ZDIxMDgxZmQ2IiwiaWF0IjoxNzUxMjg2NzA3LCJleHAiOjE3NTEzNzMxMDd9.4ymaDJmYbdfKHdnZnApiGjI_xpA4Au5lolV88j40hZ8"
+  const token =localStorage.getItem("token")
   useEffect(()=>{
       const getProfile=async()=>{
         const response=await axios.get('https://edu-master-delta.vercel.app/user',
@@ -39,7 +39,7 @@ export default function EditProfile() {
   },[])
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
+    <div className="max-w-4xl mx-auto p-4 space-y-6  text-black dark:bg-black dark:text-white">
       {/* User Info */}
       <Card>
       

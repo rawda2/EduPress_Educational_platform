@@ -26,9 +26,7 @@ const Profile = () => {
     classLevel: "",
   });
   const [preview, setPreview] = useState("");
-
-const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhd2RhMzIwMDRAZ21haWwuY29tIiwiX2lkIjoiNjg1ZTkyMDdjYzU0YWE0ZDIxMDgxZmQ2IiwiaWF0IjoxNzUxNTM5Njc0LCJleHAiOjE3NTE2MjYwNzR9.vu1s1Mgk1BMjWo528wbVXZgOV19-sDu4Ohm9hGlLTeM";
+  const token =localStorage.getItem("token")
 
   const fetchUserData = async () => {
     try {
@@ -122,7 +120,7 @@ const token =
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen">
+    <div className="bg-slate-50 min-h-screen  text-black dark:bg-black dark:text-white">
       <Toaster richColors />
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
        {isEditing ? (
@@ -134,7 +132,7 @@ const token =
 
       <CardContent>
         {/* Avatar Centered */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-6  text-black dark:bg-black dark:text-white">
           <div className="relative">
             <Avatar className="w-20 h-20 sm:w-24 sm:h-24">
               <AvatarImage
@@ -175,7 +173,7 @@ const token =
         </div>
 
         {/* Form Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4  text-black dark:bg-black dark:text-white">
           {["fullName", "email", "phoneNumber", "classLevel"].map((field) => (
             <div key={field} className="space-y-1">
               <Label className="capitalize text-sm sm:text-base">
@@ -214,7 +212,7 @@ const token =
 
 
         ) : (
-          <Card className="w-full max-w-4xl mx-auto shadow-sm sm:shadow-md rounded-lg sm:rounded-xl border border-gray-100 sm:border-none bg-white p-4 sm:p-6 md:p-8">
+          <Card className="w-full max-w-4xl mx-auto shadow-sm sm:shadow-md rounded-lg  text-black dark:bg-black dark:text-white sm:rounded-xl border border-gray-100 sm:border-none bg-white p-4 sm:p-6 md:p-8">
             <CardHeader className="flex flex-col items-center text-center space-y-4">
               <Avatar className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24">
                 <AvatarImage
@@ -229,10 +227,10 @@ const token =
                 </AvatarFallback>
               </Avatar>
               <div>
-                <CardTitle className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800">
+                <CardTitle className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800   dark:bg-black dark:text-white">
                   {user.fullName}
                 </CardTitle>
-                <CardDescription className="text-sm sm:text-base text-gray-500 mt-1">
+                <CardDescription className="text-sm sm:text-base text-gray-500 mt-1   dark:bg-black dark:text-white">
                   {user.classLevel} •{" "}
                   {user.role === "user"
                     ? "Student"
@@ -242,23 +240,23 @@ const token =
             </CardHeader>
 
             <CardContent className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-sm sm:text-base">
-              <div className="space-y-1">
-                <span className="font-semibold text-gray-600">Email:</span>
-                <p className="text-gray-700 break-all">{user.email}</p>
+              <div className="space-y-1"> 
+                <span className="font-semibold   dark:bg-black dark:text-white text-gray-600">Email:</span>
+                <p className="text-gray-700   dark:bg-black dark:text-white break-all">{user.email}</p>
               </div>
               <div className="space-y-1">
-                <span className="font-semibold text-gray-600">Phone Number:</span>
-                <p className="text-gray-700">{user.phoneNumber}</p>
+                <span className="font-semibold text-gray-600   dark:bg-black dark:text-white">Phone Number:</span>
+                <p className="text-gray-700   dark:bg-black dark:text-white">{user.phoneNumber}</p>
               </div>
               <div className="space-y-1">
-                <span className="font-semibold text-gray-600">Verified:</span>
+                <span className="font-semibold text-gray-600  dark:bg-black dark:text-white">Verified:</span>
                 <p className={`${user.isVerified ? "text-green-600" : "text-red-600"}`}>
                   {user.isVerified ? "Yes ✅" : "No ❌"}
                 </p>
               </div>
               <div className="space-y-1">
-                <span className="font-semibold text-gray-600">Created At:</span>
-                <p className="text-gray-700">
+                <span className="font-semibold text-gray-600   dark:bg-black dark:text-white">Created At:</span>
+              <p className="text-gray-700   dark:bg-black dark:text-white">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </p>
               </div>

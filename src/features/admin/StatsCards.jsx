@@ -5,23 +5,35 @@ export default function StatsCards({ stats }) {
   const cards = [
     {
       title: "Students",
-      icon: <Users className="text-primary" />,
+      icon: <Users className="text-blue-500 dark:text-blue-400" />,
       value: stats?.students ?? 0,
+      bgLight: "bg-white",
+      bgDark: "dark:bg-gray-800",
+      borderDark: "dark:border-gray-700",
     },
     {
       title: "Lessons",
-      icon: <BookOpen className="text-primary" />,
+      icon: <BookOpen className="text-green-500 dark:text-green-400" />,
       value: stats?.lessons ?? 0,
+      bgLight: "bg-white",
+      bgDark: "dark:bg-gray-800",
+      borderDark: "dark:border-gray-700",
     },
     {
       title: "Exams",
-      icon: <ListChecks className="text-primary" />,
+      icon: <ListChecks className="text-purple-500 dark:text-purple-400" />,
       value: stats?.exams ?? 0,
+      bgLight: "bg-white",
+      bgDark: "dark:bg-gray-800",
+      borderDark: "dark:border-gray-700",
     },
     {
       title: "Questions",
-      icon: <FileQuestion className="text-primary" />,
+      icon: <FileQuestion className="text-yellow-500 dark:text-yellow-400" />,
       value: stats?.questions ?? 0,
+      bgLight: "bg-white",
+      bgDark: "dark:bg-gray-800",
+      borderDark: "dark:border-gray-700",
     },
   ];
 
@@ -30,7 +42,7 @@ export default function StatsCards({ stats }) {
       {cards.map((card) => (
         <Card
           key={card.title}
-          className="bg-card text-card-foreground shadow-sm border border-border"
+          className={`shadow-sm border border-border ${card.bgLight} ${card.bgDark} ${card.borderDark} text-card-foreground`}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
