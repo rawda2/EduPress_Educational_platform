@@ -17,11 +17,11 @@ import {
   PaginationNext,
   PaginationLink,
 } from "@/components/ui/pagination";
-import { Eye, Pencil, Trash } from "lucide-react";
+import { Eye, Trash ,Pencil } from "lucide-react";
 
 const ITEMS_PER_PAGE = 5;
 
-export default function LessonsTable({ lessons, onShow, onEdit, onDelete }) {
+export default function LessonsTable({ lessons = [], onShow, onDelete }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(lessons.length / ITEMS_PER_PAGE);
@@ -38,64 +38,75 @@ export default function LessonsTable({ lessons, onShow, onEdit, onDelete }) {
   };
 
   return (
-    <div className="space-y-4">
-      <Table className="bg-white dark:bg-gray-900 border rounded-md shadow-sm">
+    <div className="space-y-6">
+      <Table className="bg-white dark:bg-gray-900 border rounded-xl shadow-lg">
         <TableCaption className="text-sm text-muted-foreground">
           List of available lessons
         </TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Title</TableHead>
+            <TableHead className="w-[150px]">Title</TableHead>
             <TableHead>Description</TableHead>
-            <TableHead>Video URL</TableHead>
+            <TableHead>Video</TableHead>
             <TableHead>Class Level</TableHead>
             <TableHead>Price</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
-          {paginatedLessons.map((lesson) => (
-            <TableRow key={lesson._id}>
-              <TableCell>{lesson.title}</TableCell>
-              <TableCell className="max-w-[200px] truncate">{lesson.description}</TableCell>
-              <TableCell>
-                <a
-                  href={lesson.videoUrl}
-                  className="text-blue-500 underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View Video
-                </a>
+          {paginatedLessons.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
+                No lessons found.
               </TableCell>
-              <TableCell>{lesson.classLevel}</TableCell>
-              <TableCell>{lesson.price ? `${lesson.price} EGP` : "Free"}</TableCell>
-             <TableCell className="space-x-2">
-                <Button size="sm" variant="ghost" onClick={() => onShow(lesson)}>
+            </TableRow>
+          ) : (
+            paginatedLessons.map((lesson) => (
+              <TableRow key={lesson._id}>
+                <TableCell className="font-medium">{lesson.title || "-"}</TableCell>
+                <TableCell className="max-w-[200px] truncate">
+                  {lesson.description || "-"}
+                </TableCell>
+                <TableCell>
+                  {lesson.video ? (
+                    <a
+                      href={lesson.video}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      View Video
+                    </a>
+                  ) : (
+                    <span className="text-muted-foreground">No Video</span>
+                  )}
+                </TableCell>
+                <TableCell>{lesson.classLevel || "N/A"}</TableCell>
+                <TableCell>
+                  {lesson.isPaid ? `${lesson.price || 0} EGP` : "Free"}
+                </TableCell>
+                <TableCell className="text-center space-x-2">
+                  <Button size="sm" variant="ghost" onClick={() => onShow(lesson)}>
                     <Eye size={16} />
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => onEdit(lesson)}>
-                    <Pencil size={16} />
-                </Button>
-                <Button
+                  </Button>
+                  <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => {
-                    if (confirm("Are you sure you want to delete this lesson?")) {
-                        onDelete(lesson._id);
-                    }
-                    }}
-                >
+                    onClick={() => onDelete(lesson)}
+                  >
                     <Trash size={16} className="text-red-500" />
-                </Button>
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => {}}>
+                    <Pencil size={16} />
+                  </Button>
                 </TableCell>
-
-            </TableRow>
-          ))}
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <Pagination>
           <PaginationContent>
