@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Plus, X } from "lucide-react";
+import { LessonModalFrom } from "@/components/dashboard/LessonModal";
 
 export default function DashLessons() {
   const [classLevel, setClassLevel] = useState("all");
@@ -82,12 +83,7 @@ export default function DashLessons() {
     <div className="space-y-6 relative">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Lessons</h1>
-          <Button
-          className="bg-primary text-white flex items-center gap-2"
-        >
-          <Plus size={16} />
-          Add New Lesson
-        </Button>
+        <LessonModalFrom use="Add"/>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 py-6 border-b border-gray-300 dark:border-gray-700 mb-8">
