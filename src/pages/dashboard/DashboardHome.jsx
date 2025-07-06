@@ -76,7 +76,7 @@ export default function DashboardHome() {
       <div className="flex gap-4 items-center">
         <AddExamModal />
         <AddLessonModal />
-        <AddQuestionModal />
+        <AddQuestionModal exams={exams} />
       </div>
     </div>
   );

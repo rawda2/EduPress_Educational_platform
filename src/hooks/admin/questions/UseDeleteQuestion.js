@@ -1,7 +1,7 @@
-// hooks/admin/questions/useDeleteQuestion.js
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteQuestionAPI } from "@/services/AdminAPI";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { deleteQuestionAPI } from "@/services/AdminAPI";
 
 export const useDeleteQuestion = () => {
   const queryClient = useQueryClient();

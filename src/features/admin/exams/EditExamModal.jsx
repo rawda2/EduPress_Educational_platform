@@ -18,7 +18,7 @@ export default function EditExamModal({ selectedExam }) {
           <Pencil size={16} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[calc(100vh-6rem)] overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Exam</DialogTitle>
         </DialogHeader>

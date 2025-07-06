@@ -1,27 +1,28 @@
-import React, { useState } from "react";
+import { useState } from "react";
+
 import {
   Table,
-  TableCaption,
-  TableHeader,
   TableRow,
   TableHead,
   TableBody,
   TableCell,
+  TableHeader,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Eye, Pencil, Trash } from "lucide-react";
 import {
   Pagination,
-  PaginationContent,
   PaginationItem,
-  PaginationPrevious,
   PaginationNext,
   PaginationLink,
+  PaginationContent,
+  PaginationPrevious,
 } from "@/components/ui/pagination";
+import ViewQuestionModal from "./questions/ViewQuestionModal";
+import UpdateQuestionModal from "./questions/UpdateQuestionModal";
+import DeleteQuestionModal from "./questions/DeleteQuestionModal";
 
 const ITEMS_PER_PAGE = 5;
 
-export default function QuestionsTable({ questions, onShow, onEdit, onDelete }) {
+export default function QuestionsTable({ questions }) {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(questions.length / ITEMS_PER_PAGE);
 
@@ -38,53 +39,40 @@ export default function QuestionsTable({ questions, onShow, onEdit, onDelete }) 
 
   return (
     <div className="space-y-4">
-      <Table className="bg-white dark:bg-gray-900 border rounded-md shadow-sm">
-        <TableCaption className="text-sm text-muted-foreground">
-          List of available questions
-        </TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Text</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Points</TableHead>
-            <TableHead>Correct Answer</TableHead>
-            <TableHead>Exam Title</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {paginatedQuestions.map((q) => (
-            <TableRow key={q._id}>
-              <TableCell className="max-w-[200px] truncate">{q.text}</TableCell>
-              <TableCell>{q.type}</TableCell>
-              <TableCell>{q.points}</TableCell>
-              <TableCell className="font-medium">{q.correctAnswer}</TableCell>
-              <TableCell>
-                {q.exam?.title || "—"} {/* لو exam فيه title */}
-              </TableCell>
-              <TableCell className="space-x-2">
-                <Button size="sm" variant="ghost" onClick={() => onShow(q)}>
-                  <Eye size={16} />
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => onEdit(q)}>
-                  <Pencil size={16} />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    if (confirm("Are you sure you want to delete this question?")) {
-                      onDelete(q._id);
-                    }
-                  }}
-                >
-                  <Trash size={16} className="text-red-500" />
-                </Button>
-              </TableCell>
+      <div className="border rounded-md shadow-sm">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Text</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Points</TableHead>
+              <TableHead>Correct Answer</TableHead>
+              <TableHead>Exam Title</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {paginatedQuestions.map((q) => (
+              <TableRow key={q._id}>
+                <TableCell className="max-w-[200px] truncate">
+                  {q.text}
+                </TableCell>
+                <TableCell>{q.type}</TableCell>
+                <TableCell>{q.points}</TableCell>
+                <TableCell className="font-medium">{q.correctAnswer}</TableCell>
+                <TableCell>
+                  {q.exam?.title || "—"} {/* لو exam فيه title */}
+                </TableCell>
+                <TableCell className="space-x-2">
+                  <ViewQuestionModal question={q} />
+                  <UpdateQuestionModal question={q} />
+                  <DeleteQuestionModal questionId={q?._id} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       {totalPages > 1 && (
         <Pagination>
@@ -92,7 +80,9 @@ export default function QuestionsTable({ questions, onShow, onEdit, onDelete }) 
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => handlePageChange(currentPage - 1)}
-                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                className={
+                  currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
 
@@ -110,7 +100,11 @@ export default function QuestionsTable({ questions, onShow, onEdit, onDelete }) 
             <PaginationItem>
               <PaginationNext
                 onClick={() => handlePageChange(currentPage + 1)}
-                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                className={
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
               />
             </PaginationItem>
           </PaginationContent>

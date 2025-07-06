@@ -8,21 +8,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import ViewExamDetails from "../ViewExamDetails";
+import ExamScoresTable from "./ExamScoresTable";
 
-export default function ViewExamModal({ exam }) {
+export default function ViewExamScoresModel({ examId }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" variant="ghost">
+        <Button className="flex gap-2">
           <Eye size={16} />
+          View Scores
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Exam</DialogTitle>
+          <DialogTitle>Students' Scores</DialogTitle>
         </DialogHeader>
-        <ViewExamDetails exam={exam} />
+        <ExamScoresTable examId={examId} />
       </DialogContent>
     </Dialog>
   );

@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import AddQuestionForm from "./AddQuestionForm";
 
-export default function AddQuestionModal() {
+export default function AddQuestionModal({ exams }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -23,7 +23,7 @@ export default function AddQuestionModal() {
         <DialogHeader>
           <DialogTitle>Add New Question</DialogTitle>
         </DialogHeader>
-        <AddQuestionForm />
+        <AddQuestionForm exams={exams} />
       </DialogContent>
     </Dialog>
   );

@@ -1,4 +1,4 @@
-import { Eye } from "lucide-react";
+import { Pencil } from "lucide-react";
 
 import {
   Dialog,
@@ -8,21 +8,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import ViewExamDetails from "../ViewExamDetails";
+import UpdateQuestionForm from "../UpdateQuestionForm";
 
-export default function ViewExamModal({ exam }) {
+export default function UpdateQuestionModal({ question }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" variant="ghost">
-          <Eye size={16} />
+        <Button variant="ghost" size="sm">
+          <Pencil size={16} />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Exam</DialogTitle>
+          <DialogTitle>Edit Question</DialogTitle>
         </DialogHeader>
-        <ViewExamDetails exam={exam} />
+        <UpdateQuestionForm question={question} />
       </DialogContent>
     </Dialog>
   );

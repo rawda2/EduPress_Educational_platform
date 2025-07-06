@@ -71,6 +71,8 @@ export default function AppRouter() {
               </SuspenseFallback>
             }
           />
+
+          {/* lessons */}
           <Route
             path="lessons"
             element={
@@ -104,6 +106,40 @@ export default function AppRouter() {
             element={
               <SuspenseFallback>
                 <ShoppingCart />
+              </SuspenseFallback>
+            }
+          />
+
+          {/* Exam Routes */}
+          <Route
+            path="/studentExam/start/:examId"
+            element={
+              <SuspenseFallback>
+                <StartExam />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="/exam/get/:examId"
+            element={
+              <SuspenseFallback>
+                <TakeExam />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="/studentExam/exams/score/:examId"
+            element={
+              <SuspenseFallback>
+                <ExamResults />
+              </SuspenseFallback>
+            }
+          />
+          <Route
+            path="/exams"
+            element={
+              <SuspenseFallback>
+                <Exams />
               </SuspenseFallback>
             }
           />
@@ -228,7 +264,7 @@ export default function AppRouter() {
             path="students"
             element={
               <SuspenseFallback>
-                <DashStudents user="user" />
+                <DashStudents />
               </SuspenseFallback>
             }
           />
@@ -251,40 +287,6 @@ export default function AppRouter() {
           />
           {/* <Route path="settings" element={<div>Profile Settings</div>} /> */}
         </Route>
-
-        {/* Exam Routes */}
-        <Route
-          path="/studentExam/start/:examId"
-          element={
-            <SuspenseFallback>
-              <StartExam />
-            </SuspenseFallback>
-          }
-        />
-        <Route
-          path="/exam/get/:examId"
-          element={
-            <SuspenseFallback>
-              <TakeExam />
-            </SuspenseFallback>
-          }
-        />
-        <Route
-          path="/studentExam/exams/score/:examId"
-          element={
-            <SuspenseFallback>
-              <ExamResults />
-            </SuspenseFallback>
-          }
-        />
-        <Route
-          path="/exam"
-          element={
-            <SuspenseFallback>
-              <Exams />
-            </SuspenseFallback>
-          }
-        />
 
         {/* Unauthorized Page */}
         <Route path="/unauthorized" element={<Unauthorized />} />

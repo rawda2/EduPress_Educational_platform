@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { examSchema } from "@/validations/ExamSchema";
@@ -80,7 +80,7 @@ export default function UpdateExamForm({ exam }) {
         <label className="block font-medium">Exam Title</label>
         <Input {...register("title")} />
         {errors.title && (
-          <p className="text-red-500 text-sm">{errors.title.message}</p>
+          <p className="text-destructive text-sm">{errors.title.message}</p>
         )}
       </div>
 
@@ -88,7 +88,9 @@ export default function UpdateExamForm({ exam }) {
         <label className="block font-medium">Description</label>
         <Textarea {...register("description")} />
         {errors.description && (
-          <p className="text-red-500 text-sm">{errors.description.message}</p>
+          <p className="text-destructive text-sm">
+            {errors.description.message}
+          </p>
         )}
       </div>
 
@@ -96,7 +98,7 @@ export default function UpdateExamForm({ exam }) {
         <label className="block font-medium">Duration (minutes)</label>
         <Input type="number" {...register("duration")} />
         {errors.duration && (
-          <p className="text-red-500 text-sm">{errors.duration.message}</p>
+          <p className="text-destructive text-sm">{errors.duration.message}</p>
         )}
       </div>
 
@@ -113,7 +115,9 @@ export default function UpdateExamForm({ exam }) {
           </SelectContent>
         </Select>
         {errors.classLevel && (
-          <p className="text-red-500 text-sm">{errors.classLevel.message}</p>
+          <p className="text-destructive text-sm">
+            {errors.classLevel.message}
+          </p>
         )}
       </div>
 
@@ -131,14 +135,16 @@ export default function UpdateExamForm({ exam }) {
           <label className="block font-medium">Start Date</label>
           <Input type="date" {...register("startDate")} />
           {errors.startDate && (
-            <p className="text-red-500 text-sm">{errors.startDate.message}</p>
+            <p className="text-destructive text-sm">
+              {errors.startDate.message}
+            </p>
           )}
         </div>
         <div className="space-y-2">
           <label className="block font-medium">End Date</label>
           <Input type="date" {...register("endDate")} />
           {errors.endDate && (
-            <p className="text-red-500 text-sm">{errors.endDate.message}</p>
+            <p className="text-destructive text-sm">{errors.endDate.message}</p>
           )}
         </div>
       </div>
@@ -150,7 +156,7 @@ export default function UpdateExamForm({ exam }) {
           <Button
             type="button"
             onClick={() => setShowAddForm(true)}
-            className="bg-primary text-white flex items-center gap-2"
+            className="bg-primary flex items-center gap-2"
           >
             <Plus size={16} /> Add New Question
           </Button>
@@ -160,16 +166,13 @@ export default function UpdateExamForm({ exam }) {
           <p className="text-muted-foreground">No questions added yet.</p>
         ) : (
           questions.map((q, i) => (
-            <div
-              key={q._id}
-              className="p-4 border rounded-md bg-white dark:bg-[#1f2937]"
-            >
+            <div key={q._id} className="p-4 border rounded-md">
               <div className="flex justify-between">
                 <div>
                   <p className="font-semibold">
                     {i + 1}. {q.text}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     Type: {q.type} | Points: {q.points}
                   </p>
                 </div>
@@ -197,7 +200,7 @@ export default function UpdateExamForm({ exam }) {
         )}
       </div>
 
-      <LoadingButton type="submit" loading={isPending}>
+      <LoadingButton type="submit" loading={isPending} className="w-full">
         Update Exam
       </LoadingButton>
 
@@ -207,7 +210,7 @@ export default function UpdateExamForm({ exam }) {
           <div className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg w-full max-w-2xl">
             <button
               onClick={() => setShowAddForm(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-red-500"
+              className="absolute top-4 right-4 text-gray-500 hover:text-destructive"
             >
               <X size={20} />
             </button>
@@ -229,7 +232,7 @@ export default function UpdateExamForm({ exam }) {
           <div className="relative bg-white dark:bg-[#1f2937] p-6 rounded-xl shadow-lg w-full max-w-2xl">
             <button
               onClick={() => setEditingQuestion(null)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-red-500"
+              className="absolute top-4 right-4 text-gray-500 hover:text-destructive"
             >
               <X size={20} />
             </button>
