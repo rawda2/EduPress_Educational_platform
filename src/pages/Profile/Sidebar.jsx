@@ -1,57 +1,55 @@
+import { useState } from "react";
 import { NavLink } from "react-router";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import profileImg from "./../../assets/Ellipse 53.png";
-import share from "./../../assets/share.png";
-import { Menu, X } from "lucide-react"; // Use any icon library you prefer
+import { Loader2, Menu, X } from "lucide-react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+import useUser from "@/features/auth/useUser";
+
+import userAvatar from "@/assets/user-avatar.png";
+import { Button } from "@/components/ui/button";
 
 export default function Sidebar() {
-  const [profile, setProfile] = useState({});
   const [isOpen, setIsOpen] = useState(false);
 
-  const token =localStorage.getItem("token")
+  const { isLoading, data: user, error } = useUser();
+  console.log(user);
 
-  useEffect(() => {
-    const getProfile = async () => {
-      const response = await axios.get("https://edu-master-delta.vercel.app/user", {
-        headers: {
-          token,
-        },
-      });
-      setProfile(response.data.data);
-    };
-    getProfile();
-  }, []);
+  if (isLoading)
+    return <Loader2 className="animate-spin size-8 mx-auto my-20" />;
+
+  if (error) return <div>Error in fetching profile data</div>;
+
+  // return null;
 
   return (
     <>
       {/* Toggle Button for Mobile */}
-      <button
-        className="md:hidden fixed top-4 left-4 z-50bg-white text-black dark:bg-black dark:text-white min-h-screen border rounded p-2 shadow"
+      <Button
+        size="icon"
+        variant="outline"
+        className="md:hidden fixed top-20 right-4 z-50 rounded p-2 shadow"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle Sidebar"
       >
-        {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-      </button>
+        {isOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+      </Button>
 
       {/* Sidebar Panel */}
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-fullbg-white text-black dark:bg-black dark:text-white min-h-screen shadow-lg transform transition-transform duration-300 ease-in-out
-        ${isOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0 md:flex md:flex-col`}
+        className={`fixed top-0 left-0 z-40 w-64 h-full shadow-lg transform transition-transform duration-300 ease-in-out bg-background border-r text-foreground
+        ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } md:relative md:translate-x-0 md:flex md:flex-col`}
       >
         <div className="text-center mt-20 mb-6 flex flex-col items-center">
-          <img
-            src={profileImg}
-            alt="User"
-            className="rounded-full w-24 h-24 mx-auto"
-          />
+          <Avatar className="cursor-pointer size-24">
+            <AvatarImage src={userAvatar} alt="avatar" />
+            <AvatarFallback>{user.fullName}</AvatarFallback>
+          </Avatar>
           <h3 className="mt-2 font-bold text-xl text-center break-words">
-            {profile.fullName}
+            {user.fullName}
           </h3>
-          <button className="text-sm text-black dark:text-white flex items-center gap-1 mt-2">
-            Share Profile
-            <img src={share} alt="Share icon" className="w-4 h-4 " />
-          </button>
         </div>
 
         <nav className="mt-4">
@@ -66,10 +64,8 @@ export default function Sidebar() {
                 <NavLink
                   to={to}
                   className={({ isActive }) =>
-                    `block p-2 ps-4 rounded text-sm ${
-                      isActive
-                        ? "bg-slate-800 text-white"
-                        : "text-gray-700 hover:bg-gray-100"
+                    `block p-2 ps-4 rounded text-sm hover:bg-accent hover:text-accent-foreground ${
+                      isActive ? "bg-accent text-accent-foreground" : ""
                     }`
                   }
                   onClick={() => setIsOpen(false)} // close on mobile link click

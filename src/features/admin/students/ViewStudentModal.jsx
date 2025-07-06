@@ -20,7 +20,7 @@ export default function ViewStudentModal({ student }) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Question Details</DialogTitle>
+          <DialogTitle>Student Details</DialogTitle>
         </DialogHeader>
         <ViewStudentDetails student={student} />
       </DialogContent>

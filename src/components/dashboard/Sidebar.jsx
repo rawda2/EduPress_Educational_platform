@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import {
   Home,
   Globe,
@@ -8,6 +7,9 @@ import {
   FileText,
   HelpCircle,
 } from "lucide-react";
+import { Link, useLocation } from "react-router";
+
+import { cn } from "@/lib/utils";
 // import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 
 const adminsLinks = [
@@ -30,6 +32,9 @@ export default function Sidebar() {
   // const sAdmin = useIsSuperAdmin();
 
   // const links = sAdmin ? sAdminLinks : adminsLinks;
+
+  const { pathname } = useLocation();
+
   return (
     <aside className="w-64 p-4 space-y-2">
       <h2 className="text-xl font-bold mb-4">Dashboard</h2>
@@ -39,7 +44,10 @@ export default function Sidebar() {
           <Link
             to={to}
             key={label}
-            className="flex items-center gap-4 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition"
+            className={cn(
+              "flex items-center gap-4 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition",
+              pathname === to && "bg-accent text-accent-foreground"
+            )}
           >
             <Icon className="size-5" />
             <span>{label}</span>

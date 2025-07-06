@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Pen, Plus } from "lucide-react";
+import { Loader2, Pen, PlusCircle } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Controller, useForm } from "react-hook-form";
 import { DatePicker } from "./DatePicker";
@@ -153,7 +153,7 @@ export function LessonModalFrom({ use, id }) {
         >
           {use === "Add" ? (
             <>
-              <Plus size={16} />
+              <PlusCircle size={16} />
               Add New Lesson
             </>
           ) : (
