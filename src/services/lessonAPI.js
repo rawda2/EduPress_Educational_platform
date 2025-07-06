@@ -48,3 +48,52 @@ export async function payLesson(id) {
     console.error(error);
   }
 }
+
+
+export async function createLesson(data) {
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await axios.post(
+      `https://edu-master-delta.vercel.app/lesson`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token,
+        },
+      }
+    );
+
+    if (!res.data.success) {
+      throw new Error("Failed to create lesson");
+    }
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function updateLesson(id, data) {
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await axios.put(
+      `https://edu-master-delta.vercel.app/lesson/${id}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token,
+        },
+      }
+    );
+
+    if (!res.data.success) {
+      throw new Error("Failed to update lesson");
+    }
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+}

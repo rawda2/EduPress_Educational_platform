@@ -18,6 +18,7 @@ import {
   PaginationLink,
 } from "@/components/ui/pagination";
 import { Eye, Trash ,Pencil } from "lucide-react";
+import { LessonModalFrom } from "@/components/dashboard/LessonModal";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -97,9 +98,7 @@ export default function LessonsTable({ lessons = [], onShow, onDelete }) {
                   >
                     <Trash size={16} className="text-red-500" />
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => {}}>
-                    <Pencil size={16} />
-                  </Button>
+                  <LessonModalFrom use="Edit" id={lesson._id} />
                 </TableCell>
               </TableRow>
             ))
