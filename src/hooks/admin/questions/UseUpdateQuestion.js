@@ -7,8 +7,8 @@ export const useUpdateQuestion = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ questionId, data }) =>
-      updateQuestionAPI({ questionId, data }),
+        mutationFn: ({ id, data }) => updateQuestionAPI(id, data),
+
     onSuccess: () => {
       toast.success("Question updated successfully");
       queryClient.invalidateQueries(["exams"]);
@@ -18,3 +18,4 @@ export const useUpdateQuestion = () => {
     },
   });
 };
+

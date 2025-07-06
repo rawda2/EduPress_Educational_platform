@@ -1,25 +1,17 @@
 import { useState, useEffect } from "react";
-
-import {
-  Select,
-  SelectItem,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
-
+import { Select, SelectItem, SelectTrigger, SelectValue, SelectContent } from "@/components/ui/select";
 import { useUpdateQuestion } from "@/hooks/admin/questions/UseUpdateQuestion";
 
-export default function UpdateQuestionForm({ question }) {
+export default function UpdateQuestionForm({ question, onSuccess }) {
   const { isPending: isLoading, mutate: updateQuestion } = useUpdateQuestion();
 
   const [formData, setFormData] = useState({
     text: question?.text || "",
     type: question?.type || "multiple-choice",
-    options: question?.options || [],
+    options: question?.options?.length ? question.options : ["", "", "", ""],
     correctAnswer: question?.correctAnswer || "",
     points: question?.points || 1,
   });
@@ -29,10 +21,14 @@ export default function UpdateQuestionForm({ question }) {
       setFormData((prev) => ({
         ...prev,
         options: ["True", "False"],
-        correctAnswer:
-          prev.correctAnswer === "True" || prev.correctAnswer === "False"
-            ? prev.correctAnswer
-            : "True",
+        correctAnswer: prev.correctAnswer === "True" || prev.correctAnswer === "False" ? prev.correctAnswer : "True",
+      }));
+    } else if (formData.type === "short-answer") {
+      setFormData((prev) => ({ ...prev, options: [], correctAnswer: "" }));
+    } else if (formData.type === "multiple-choice") {
+      setFormData((prev) => ({
+        ...prev,
+        options: prev.options.length ? prev.options : ["", "", "", ""],
       }));
     }
   }, [formData.type]);
@@ -50,37 +46,42 @@ export default function UpdateQuestionForm({ question }) {
     updatedOptions[index] = value;
     setFormData((prev) => ({ ...prev, options: updatedOptions }));
   };
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const updatedQuestion = {
-      ...question,
-      ...formData,
-    };
-
-    updateQuestion({ id: question._id, data: updatedQuestion });
+  const payload = {
+    text: formData.text,
+    type: formData.type,
+    correctAnswer: formData.correctAnswer,
+    points: formData.points,
   };
+
+  if (formData.type === "multiple-choice") {
+    payload.options = formData.options;
+  }
+
+  updateQuestion(
+    { id: question._id, data: payload },
+    {
+      onSuccess: () => {
+        onSuccess?.();
+      },
+    }
+  );
+};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block font-medium mb-1">Question Text</label>
-        <Textarea
-          name="text"
-          value={formData.text}
-          onChange={handleInputChange}
-          required
-        />
+        <Textarea name="text" value={formData.text} onChange={handleInputChange} required />
       </div>
 
       <div>
         <label className="block font-medium mb-1">Type</label>
         <Select
           value={formData.type}
-          onValueChange={(value) =>
-            setFormData((prev) => ({ ...prev, type: value }))
-          }
+          onValueChange={(value) => setFormData((prev) => ({ ...prev, type: value }))}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select Type" />
@@ -93,31 +94,50 @@ export default function UpdateQuestionForm({ question }) {
         </Select>
       </div>
 
-      {/* خيارات السؤال لو النوع Multiple Choice */}
-      {formData.type === "multiple-choice" && (
-        <div className="space-y-2">
-          <label className="block font-medium mb-1">Options</label>
-          {formData.options.map((opt, idx) => (
-            <Input
-              key={idx}
-              value={opt}
-              onChange={(e) => handleOptionChange(idx, e.target.value)}
-              placeholder={`Option ${idx + 1}`}
-              required
-            />
-          ))}
-        </div>
-      )}
+    {formData.type === "multiple-choice" && (
+  <div className="space-y-2">
+    <label className="block font-medium mb-1">Options</label>
+    {formData.options.map((opt, idx) => (
+      <Input
+        key={idx}
+        value={opt}
+        onChange={(e) => handleOptionChange(idx, e.target.value)}
+        placeholder={`Option ${idx + 1}`}
+        required
+      />
+    ))}
 
-      {/* لو النوع true-false، نعرض Select لاختيار الإجابة */}
+    <div>
+      <label className="block font-medium mb-1 mt-3">Correct Answer</label>
+      <Select
+        value={formData.correctAnswer}
+        onValueChange={(val) => setFormData((prev) => ({ ...prev, correctAnswer: val }))}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Select correct answer" />
+        </SelectTrigger>
+        <SelectContent>
+  {formData.options
+    .filter((opt) => opt.trim() !== "") 
+    .map((opt, idx) => (
+      <SelectItem key={idx} value={opt}>
+        {opt}
+      </SelectItem>
+    ))}
+</SelectContent>
+
+      </Select>
+    </div>
+  </div>
+)}
+
+
       {formData.type === "true-false" && (
         <div>
           <label className="block font-medium mb-1">Correct Answer</label>
           <Select
             value={formData.correctAnswer}
-            onValueChange={(val) =>
-              setFormData((prev) => ({ ...prev, correctAnswer: val }))
-            }
+            onValueChange={(val) => setFormData((prev) => ({ ...prev, correctAnswer: val }))}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select correct answer" />
@@ -130,7 +150,6 @@ export default function UpdateQuestionForm({ question }) {
         </div>
       )}
 
-      {/* لو النوع short-answer */}
       {formData.type === "short-answer" && (
         <div>
           <label className="block font-medium mb-1">Expected Answer</label>
@@ -145,18 +164,12 @@ export default function UpdateQuestionForm({ question }) {
 
       <div>
         <label className="block font-medium mb-1">Points</label>
-        <Input
-          type="number"
-          name="points"
-          value={formData.points}
-          onChange={handleInputChange}
-          required
-        />
+        <Input type="number" name="points" value={formData.points} onChange={handleInputChange} required />
       </div>
 
       <LoadingButton type="submit" className="w-full" loading={isLoading}>
-        Edit Question
+        Save Changes
       </LoadingButton>
     </form>
   );
-}
+}  
