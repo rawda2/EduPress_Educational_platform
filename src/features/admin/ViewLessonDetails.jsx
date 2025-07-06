@@ -1,7 +1,6 @@
-import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function ViewLessonDetails({ lesson }) {
   if (!lesson) {
@@ -9,29 +8,35 @@ export default function ViewLessonDetails({ lesson }) {
   }
 
   return (
-    <Card className="max-w-3xl mx-auto space-y-4 p-6 shadow-md border border-border dark:border-gray-700 bg-white dark:bg-[#1f2937] rounded-xl transition-colors duration-300">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <Card className="p-0 border-0 bg-transparent max-w-3xl mx-auto space-y-4 transition-colors duration-300 w-full">
+      <CardHeader className="px-0 m-0">
+        <CardTitle className="text-2xl font-bold transition-colors duration-300">
           {lesson.title}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground mb-4 dark:text-gray-300 transition-colors duration-300">
+      <CardContent className="px-0">
+        <p className="text-muted-foreground mb-4 transition-colors duration-300">
           {lesson.description || "No description provided."}
         </p>
 
-        <div className="grid grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300 mb-4 transition-colors duration-300">
+        <div className="grid grid-cols-2 gap-4 text-sm mb-4 transition-colors duration-300">
           <p>
             <strong>Class Level:</strong> {lesson.classLevel || "N/A"}
           </p>
           <p>
             <strong>Price:</strong>{" "}
             {lesson.isPaid ? (
-              <Badge variant="secondary" className="dark:bg-green-700 dark:text-green-100">
+              <Badge
+                variant="secondary"
+                className="dark:bg-green-700 dark:text-green-100"
+              >
                 {lesson.price} EGP
               </Badge>
             ) : (
-              <Badge variant="outline" className="dark:border-gray-500 dark:text-gray-400">
+              <Badge
+                variant="outline"
+                className="dark:border-gray-500 dark:text-gray-400"
+              >
                 Free
               </Badge>
             )}
@@ -39,7 +44,7 @@ export default function ViewLessonDetails({ lesson }) {
         </div>
 
         <div>
-          <strong className="text-gray-800 dark:text-gray-200">Video:</strong>{" "}
+          <strong>Video:</strong>{" "}
           {lesson.video ? (
             <Button
               variant="link"
@@ -52,7 +57,9 @@ export default function ViewLessonDetails({ lesson }) {
               View Video
             </Button>
           ) : (
-            <span className="text-muted-foreground dark:text-gray-400">No video available</span>
+            <span className="text-muted-foreground dark:text-gray-400">
+              No video available
+            </span>
           )}
         </div>
       </CardContent>

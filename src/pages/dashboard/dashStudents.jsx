@@ -59,7 +59,7 @@ export default function DashStudents() {
 
       {/* Table */}
       {isLoading ? (
-        <Loader2 className="animate-spin size-20 mx-auto my-10" />
+        <Loader2 className="animate-spin size-8 mx-auto my-10" />
       ) : isError ? (
         <p className="text-destructive">Error loading students</p>
       ) : (

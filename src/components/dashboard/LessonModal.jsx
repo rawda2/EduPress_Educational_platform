@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Pen, Plus } from "lucide-react";
+import { Loader2, Pen, PlusCircle } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Controller, useForm } from "react-hook-form";
 import { DatePicker } from "./DatePicker";
@@ -133,10 +133,10 @@ export function LessonModalFrom({ use, id }) {
     }
   };
 
-  if ( loading && use === "Add") {
+  if (loading && use === "Add") {
     return (
       <div className="flex justify-center items-center min-h-[90vh] w-full">
-        <Loader2 className="animate-spin size-20 mx-auto mt-10" />
+        <Loader2 className="animate-spin size-8 mx-auto mt-10" />
       </div>
     );
   }
@@ -145,13 +145,15 @@ export function LessonModalFrom({ use, id }) {
     <Dialog onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button
+          size={use === "Add" ? "default" : "sm"}
+          variant={use === "Add" ? "default" : "ghost"}
           className={
             use === "Add" ? `bg-primary text-white flex items-center gap-2` : ""
           }
         >
           {use === "Add" ? (
             <>
-              <Plus size={16} />
+              <PlusCircle size={16} />
               Add New Lesson
             </>
           ) : (

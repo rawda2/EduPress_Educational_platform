@@ -10,6 +10,7 @@ import { useAllUsers } from "@/hooks/admin/useAllUsers";
 import { useExams } from "@/hooks/admin/exams/useExams";
 // import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import { useQuestions } from "@/hooks/admin/questions/useQuestions";
+import { LessonModalFrom } from "@/components/dashboard/LessonModal";
 
 // import { Cards, SAdminActions } from "../SuperAdmin";
 
@@ -75,7 +76,8 @@ export default function DashboardHome() {
 
       <div className="flex gap-4 items-center">
         <AddExamModal />
-        <AddLessonModal />
+        {/* <AddLessonModal /> */}
+        <LessonModalFrom use="Add" />
         <AddQuestionModal exams={exams} />
       </div>
     </div>

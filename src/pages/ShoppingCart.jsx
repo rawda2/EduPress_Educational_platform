@@ -1,11 +1,16 @@
-import React, { useState } from "react";
-import image from "../assets/image.png";
-import { Button } from "@/components/ui/button";
-import Rating from "@/components/Rating";
-import { Loader2, Trash } from "lucide-react";
 import { toast } from "sonner";
-import { payLesson } from "@/services/lessonAPI";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import { Loader2, Trash } from "lucide-react";
+
+import Rating from "@/components/Rating";
+import EmptyCart from "@/components/EmptyCart";
+import { Button } from "@/components/ui/button";
+
+import { payLesson } from "@/services/lessonAPI";
+
+import image from "../assets/image.png";
+
 const ShoppingCart = () => {
   const lessons = JSON.parse(localStorage.getItem("cart")) || [];
   const [loading, setLoading] = useState(false);
@@ -67,9 +72,12 @@ const ShoppingCart = () => {
   if (loading)
     return (
       <div className="flex justify-center items-center min-h-[90vh] w-full">
-        <Loader2 className="animate-spin size-20 mx-auto mt-10" />
+        <Loader2 className="animate-spin size-8 mx-auto mt-10" />
       </div>
     );
+
+  if (lessons.length === 0) return <EmptyCart />;
+
   return (
     <div className="w-full px-4 py-5">
       <div className="container mx-auto">
@@ -79,45 +87,39 @@ const ShoppingCart = () => {
             <p className="text-muted-foreground my-3">
               {lessons.length} Course in cart
             </p>
-            {lessons.length === 0 ? (
-              <p className="text-muted-foreground text-3xl">
-                Your cart is empty
-              </p>
-            ) : (
-              lessons.map((lesson) => (
-                <div
-                  key={lesson._id}
-                  onClick={()=>Navigate(`/lessons/${lesson._id}`)}
-                  className="cursor-pointer hover:shadow-xl transition-shadow flex items-start justify-between border shadow-md mb-4 gap-8 rounded-xl p-4 relative"
-                >
-                  <div className="flex items-start justify-start gap-4 max-md:flex-col">
-                    <img
-                      src={image}
-                      alt="Course Thumbnail"
-                      className="h-30 object-cover rounded-md"
-                    />
+            {lessons.map((lesson) => (
+              <div
+                key={lesson._id}
+                onClick={() => Navigate(`/lessons/${lesson._id}`)}
+                className="cursor-pointer hover:shadow-xl transition-shadow flex items-start justify-between border shadow-md mb-4 gap-8 rounded-xl p-4 relative"
+              >
+                <div className="flex items-start justify-start gap-4 max-md:flex-col">
+                  <img
+                    src={image}
+                    alt="Course Thumbnail"
+                    className="h-30 object-cover rounded-md"
+                  />
+                  <div>
+                    <h2 className="text-xl font-semibold">{lesson.title}</h2>
+                    <p className="text-muted-foreground">by John Doe</p>
                     <div>
-                      <h2 className="text-xl font-semibold">{lesson.title}</h2>
-                      <p className="text-muted-foreground">by John Doe</p>
-                      <div>
-                        <Rating stars={4} />{" "}
-                        <span className="text-muted-foreground">
-                          {lesson?.scheduledDate?.slice(0, 10)}.{" "}
-                          {lesson.classLevel}
-                        </span>
-                      </div>
+                      <Rating stars={4} />{" "}
+                      <span className="text-muted-foreground">
+                        {lesson?.scheduledDate?.slice(0, 10)}.{" "}
+                        {lesson.classLevel}
+                      </span>
                     </div>
                   </div>
-                  <h1 className="text-2xl font-bold">${lesson.price}</h1>
-                  <div
-                    onClick={() => handleRemoveFromCart(lesson._id)}
-                    className="absolute bottom-3 right-3 cursor-pointer bg-red-500 text-white p-2 rounded-xl hover:bg-red-600 transition-colors"
-                  >
-                    <Trash />
-                  </div>
                 </div>
-              ))
-            )}
+                <h1 className="text-2xl font-bold">${lesson.price}</h1>
+                <div
+                  onClick={() => handleRemoveFromCart(lesson._id)}
+                  className="absolute bottom-3 right-3 cursor-pointer bg-red-500 text-white p-2 rounded-xl hover:bg-red-600 transition-colors"
+                >
+                  <Trash />
+                </div>
+              </div>
+            ))}
           </div>
           <div className="md:w-1/4">
             <h1 className="text-2xl font-bold">Order Details</h1>
