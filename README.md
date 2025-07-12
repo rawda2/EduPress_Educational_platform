@@ -1,12 +1,80 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🎓 EduPress - E-Learning Platform
 
-Currently, two official plugins are available:
+EduPress is a modern, full-featured e-learning platform built with **React**, **Vite**, and **Tailwind CSS**. It offers an intuitive and responsive learning experience for students and powerful tools for admins and instructors.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 📚 **Lessons** – Structured content delivery with progress tracking
+- 📝 **Exams & Quizzes** – Auto-evaluated exams with interactive questions
+- 👨‍💼 **Admin Dashboard** – Manage users, courses, and system settings
+- 🔐 **Authentication** – Secure login and registration flow
+- 🌗 **Dark Mode** – Theme support using `next-themes`
+- 📱 **Responsive UI** – Fully optimized for mobile, tablet, and desktop
+- ⚙️ **Modern Stack** – Fast builds, efficient routing, and a scalable codebase
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🚀 Tech Stack
+
+| Frontend        | State/Data Handling     | Styling & UI        | Dev Tools & Config      |
+|------------------|--------------------------|---------------------|--------------------------|
+| React 19         | React Query (TanStack)   | Tailwind CSS 4      | Vite                    |
+| React Hook Form  | Zod Validation           | Radix UI Components | ESLint + Plugins        |
+| React Router 7   | Axios                    | Lucide Icons        | Vite Plugin React       |
+
+## 📦 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/edu-press-e-learning-platform.git
+
+# Navigate to project directory
+cd edu-press-e-learning-platform
+
+# Install dependencies
+npm install
+````
+
+---
+
+## 🧪 Development
+
+```bash
+# Start development server
+npm run dev
+```
+
+## 🔨 Build
+
+```bash
+# Create production-ready build
+npm run build
+```
+
+## 👀 Preview Production Build
+
+```bash
+npm run preview
+```
+
+---
+
+## 🧰 Useful Scripts
+
+| Command           | Description                      |
+| ----------------- | -------------------------------- |
+| `npm run dev`     | Run development server with Vite |
+| `npm run build`   | Build for production             |
+| `npm run preview` | Preview the production build     |
+| `npm run lint`    | Lint project using ESLint        |
+
+---
+
+## 📌 Dependencies Highlights
+
+* **React Hook Form + Zod** – Type-safe form handling and validation
+* **Radix UI** – Accessible, composable primitives for UI
+* **React Query** – Data fetching and caching
+* **Lucide React** – Beautiful open-source icons
+* **Tailwind Merge + CVA** – Utility class merging & variant management
